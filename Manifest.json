@@ -1,0 +1,16 @@
+{
+  "name": "Winter Arc Tracker",
+  "short_name": "WinterArc",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#ff9800",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2543/2543239.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
