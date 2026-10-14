@@ -1,7 +1,8 @@
 {
   "name": "Winter Arc Tracker",
   "short_name": "WinterArc",
-  "start_url": "./index.html",
+  "start_url": "/winter-arc/",
+  "scope": "/winter-arc/",
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#ff9800",
