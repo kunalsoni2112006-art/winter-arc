@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winter Arc 6-Day PPL Tracker</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 10px;
+        }
+        .container {
+            width: 100%;
+            max-width: 440px;
+            margin: 0 auto;
+            background: #1e1e1e;
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+        }
+        h1 { font-size: 18px; text-align: center; color: #ff9800; margin: 5px 0; }
+        h2 { font-size: 12px; text-align: center; color: #ffb74d; margin: 0 0 10px 0; }
+
+        /* Dashboard & Rank Box */
+        .dashboard {
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 1px solid #444;
+        }
+        .rank-title {
+            font-size: 13px;
+            color: #4caf50;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .progress-text {
+            font-size: 11px;
+            color: #ccc;
+        }
+
+        /* Month Sections */
+        .month-section {
+            margin-bottom: 20px;
+            background: #2a2a2a;
+            padding: 8px;
+            border-radius: 8px;
+        }
+        .month-section h3 { 
+            font-size: 13px; 
+            margin: 0 0 8px 0; 
+            color: #fff; 
+            border-bottom: 1px solid #444; 
+            padding-bottom: 4px; 
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+        }
+        .day-box {
+            background: #333;
+            padding: 4px 2px;
+            text-align: center;
+            border-radius: 4px;
+            min-height: 46px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .day-box:hover { background: #3d3d3d; }
+        .day-box.header {
+            background: #444;
+            font-weight: bold;
+            color: #ff9800;
+            min-height: auto;
+            font-size: 9px;
+            padding: 4px 0;
+            cursor: default;
+        }
+        .day-box.rest {
+            background: #222;
+            color: #777;
+            cursor: default;
+        }
+        input[type="checkbox"] {
+            transform: scale(0.85);
+            margin: 2px 0 0 0;
+            cursor: pointer;
+        }
+        .workout-label {
+            font-size: 6px;
+            color: #ffb74d;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .rest-label {
+            font-size: 6px;
+            color: #777;
+        }
+
+        /* Modal Popup Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 15px;
+        }
+        .modal-content {
+            background: #222;
+            width: 100%;
+            max-width: 380px;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ff9800;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #444;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+        .modal-header h3 { color: #ff9800; margin: 0; font-size: 15px; }
+        .close-btn { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; }
+        .exercise-item {
+            background: #2a2a2a;
+            padding: 6px 8px;
+            border-radius: 5px;
+            margin-bottom: 6px;
+            font-size: 11px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .exercise-name { color: #fff; font-weight: bold; }
+        .exercise-sets { color: #ffb74d; }
+        .modal-note {
+            font-size: 10px;
+            color: #aaa;
+            margin-top: 8px;
+            text-align: center;
+            border-top: 1px dashed #444;
+            padding-top: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🔥 WINTER ARC TRACKER 🔥</h1>
+    <h2>6-Day PPL Routine (Oct - Dec 2026)</h2>
+
+    <!-- Dashboard & Rank System -->
+    <div class="dashboard">
+        <div class="rank-title" id="rank-display">Rank: Winter Arc Recruit 🐣</div>
+        <div class="progress-text">Workouts Done: <span id="count-display">0</span> / <span id="total-display">0</span></div>
+    </div>
+
+    <!-- OCTOBER 2026 -->
+    <div class="month-section">
+        <h3>October 2026</h3>
+        <div class="grid">
+            <div class="day-box header">Mon</div>
+            <div class="day-box header">Tue</div>
+            <div class="day-box header">Wed</div>
+            <div class="day-box header">Thu</div>
+            <div class="day-box header">Fri</div>
+            <div class="day-box header">Sat</div>
+            <div class="day-box header">Sun</div>
+            
+            <div class="day-box rest"></div><div class="day-box rest"></div><div class="day-box rest"></div>
+            <div class="day-box" onclick="openWorkout('PUSH_1', event)"><span>1</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-oct-1" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_1', event)"><span>2</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-oct-2" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_1', event)"><span>3</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-oct-3" onclick="event.stopPropagation()"></div>
+            <div class="day-box rest"><span>4</span><span class="rest-label">REST</span></div>
+
+            <div class="day-box" onclick="openWorkout('PUSH_2', event)"><span>5</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-oct-5" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_2', event)"><span>6</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-oct-6" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_2', event)"><span>7</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-oct-7" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PUSH_1', event)"><span>8</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-oct-8" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_1', event)"><span>9</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-oct-9" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_1', event)"><span>10</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-oct-10" onclick="event.stopPropagation()"></div>
+            <div class="day-box rest"><span>11</span><span class="rest-label">REST</span></div>
+
+            <div class="day-box" onclick="openWorkout('PUSH_2', event)"><span>12</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-oct-12" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_2', event)"><span>13</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-oct-13" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_2', event)"><span>14</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-oct-14" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PUSH_1', event)"><span>15</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-oct-15" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_1', event)"><span>16</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-oct-16" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_1', event)"><span>17</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-oct-17" onclick="event.stopPropagation()"></div>
+            <div class="day-box rest"><span>18</span><span class="rest-label">REST</span></div>
+
+            <div class="day-box" onclick="openWorkout('PUSH_2', event)"><span>19</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-oct-19" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_2', event)"><span>20</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-oct-20" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_2', event)"><span>21</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-oct-21" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PUSH_1', event)"><span>22</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-oct-22" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_1', event)"><span>23</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-oct-23" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_1', event)"><span>24</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-oct-24" onclick="event.stopPropagation()"></div>
+            <div class="day-box rest"><span>25</span><span class="rest-label">REST</span></div>
+
+            <div class="day-box" onclick="openWorkout('PUSH_2', event)"><span>26</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-oct-26" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_2', event)"><span>27</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-oct-27" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_2', event)"><span>28</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-oct-28" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PUSH_1', event)"><span>29</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-oct-29" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_1', event)"><span>30</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-oct-30" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_1', event)"><span>31</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-oct-31" onclick="event.stopPropagation()"></div>
+            <div class="day-box rest"></div>
+        </div>
+    </div>
+
+    <!-- NOVEMBER 2026 -->
+    <div class="month-section">
+        <h3>November 2026</h3>
+        <div class="grid">
+            <div class="day-box header">Mon</div>
+            <div class="day-box header">Tue</div>
+            <div class="day-box header">Wed</div>
+            <div class="day-box header">Thu</div>
+            <div class="day-box header">Fri</div>
+            <div class="day-box header">Sat</div>
+            <div class="day-box header">Sun</div>
+            
+            <div class="day-box rest"></div><div class="day-box rest"></div><div class="day-box rest"></div><div class="day-box rest"></div><div class="day-box rest"></div><div class="day-box rest"></div>
+            <div class="day-box rest"><span>1</span><span class="rest-label">REST</span></div>
+            
+            <div class="day-box" onclick="openWorkout('PUSH_2', event)"><span>2</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-nov-2" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_2', event)"><span>3</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-nov-3" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_2', event)"><span>4</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-nov-4" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PUSH_1', event)"><span>5</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-nov-5" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_1', event)"><span>6</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-nov-6" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_1', event)"><span>7</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-nov-7" onclick="event.stopPropagation()"></div>
+            <div class="day-box rest"><span>8</span><span class="rest-label">REST</span></div>
+
+            <div class="day-box" onclick="openWorkout('PUSH_2', event)"><span>9</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-nov-9" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_2', event)"><span>10</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-nov-10" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_2', event)"><span>11</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-nov-11" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PUSH_1', event)"><span>12</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-nov-12" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_1', event)"><span>13</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-nov-13" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_1', event)"><span>14</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-nov-14" onclick="event.stopPropagation()"></div>
+            <div class="day-box rest"><span>15</span><span class="rest-label">REST</span></div>
+
+            <div class="day-box" onclick="openWorkout('PUSH_2', event)"><span>16</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-nov-16" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_2', event)"><span>17</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-nov-17" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_2', event)"><span>18</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-nov-18" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PUSH_1', event)"><span>19</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-nov-19" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_1', event)"><span>20</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-nov-20" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_1', event)"><span>21</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-nov-21" onclick="event.stopPropagation()"></div>
+            <div class="day-box rest"><span>22</span><span class="rest-label">REST</span></div>
+
+            <div class="day-box" onclick="openWorkout('PUSH_2', event)"><span>23</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-nov-23" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_2', event)"><span>24</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-nov-24" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_2', event)"><span>25</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-nov-25" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PUSH_1', event)"><span>26</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-nov-26" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_1', event)"><span>27</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-nov-27" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_1', event)"><span>28</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-nov-28" onclick="event.stopPropagation()"></div>
+            <div class="day-box rest"><span>29</span><span class="rest-label">REST</span></div>
+
+            <div class="day-box" onclick="openWorkout('PUSH_2', event)"><span>30</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-nov-30" onclick="event.stopPropagation()"></div>
+            <div class="day-box rest"></div><div class="day-box rest"></div><div class="day-box rest"></div><div class="day-box rest"></div><div class="day-box rest"></div><div class="day-box rest"></div>
+        </div>
+    </div>
+
+    <!-- DECEMBER 2026 -->
+    <div class="month-section">
+        <h3>December 2026</h3>
+        <div class="grid">
+            <div class="day-box header">Mon</div>
+            <div class="day-box header">Tue</div>
+            <div class="day-box header">Wed</div>
+            <div class="day-box header">Thu</div>
+            <div class="day-box header">Fri</div>
+            <div class="day-box header">Sat</div>
+            <div class="day-box header">Sun</div>
+            
+            <div class="day-box rest"></div>
+            <div class="day-box" onclick="openWorkout('PULL_1', event)"><span>1</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-dec-1" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_1', event)"><span>2</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-dec-2" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PUSH_2', event)"><span>3</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-dec-3" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_2', event)"><span>4</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-dec-4" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_2', event)"><span>5</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-dec-5" onclick="event.stopPropagation()"></div>
+            <div class="day-box rest"><span>6</span><span class="rest-label">REST</span></div>
+
+            <div class="day-box" onclick="openWorkout('PUSH_1', event)"><span>7</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-dec-7" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_1', event)"><span>8</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-dec-8" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_1', event)"><span>9</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-dec-9" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PUSH_2', event)"><span>10</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-dec-10" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_2', event)"><span>11</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-dec-11" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_2', event)"><span>12</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-dec-12" onclick="event.stopPropagation()"></div>
+            <div class="day-box rest"><span>13</span><span class="rest-label">REST</span></div>
+
+            <div class="day-box" onclick="openWorkout('PUSH_1', event)"><span>14</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-dec-14" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_1', event)"><span>15</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-dec-15" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_1', event)"><span>16</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-dec-16" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PUSH_2', event)"><span>17</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-dec-17" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_2', event)"><span>18</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-dec-18" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_2', event)"><span>19</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-dec-19" onclick="event.stopPropagation()"></div>
+            <div class="day-box rest"><span>20</span><span class="rest-label">REST</span></div>
+
+            <div class="day-box" onclick="openWorkout('PUSH_1', event)"><span>21</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-dec-21" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_1', event)"><span>22</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-dec-22" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_1', event)"><span>23</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-dec-23" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PUSH_2', event)"><span>24</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-dec-24" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_2', event)"><span>25</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-dec-25" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_2', event)"><span>26</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-dec-26" onclick="event.stopPropagation()"></div>
+            <div class="day-box rest"><span>27</span><span class="rest-label">REST</span></div>
+
+            <div class="day-box" onclick="openWorkout('PUSH_1', event)"><span>28</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-dec-28" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PULL_1', event)"><span>29</span><span class="workout-label">PULL</span><input type="checkbox" id="chk-dec-29" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('LEGS_1', event)"><span>30</span><span class="workout-label">LEGS</span><input type="checkbox" id="chk-dec-30" onclick="event.stopPropagation()"></div>
+            <div class="day-box" onclick="openWorkout('PUSH_2', event)"><span>31</span><span class="workout-label">PUSH</span><input type="checkbox" id="chk-dec-31" onclick="event.stopPropagation()"></div>
+            <div class="day-box rest"></div><div class="day-box rest"></div><div class="day-box rest"></div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal Popup for Workouts -->
+<div class="modal" id="workoutModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Workout Routine</h3>
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+        </div>
+        <div id="modalBody"></div>
+        <div class="modal-note">Warm up 5 min | Rest 60-90s | 1-2 reps before failure[span_0](start_span)[span_0](end_span)[span_1](start_span)[span_1](end_span)</div>
+    </div>
+</div>
+
+<script>
+    const workoutsData = {
+        "PUSH_1": [
+            { name: "Bench press", sets: "4 x 8-10" },
+            { name: "Incline dumbbell press", sets: "3 x 10" },
+            { name: "Shoulder press", sets: "3 x 10" },
+            { name: "Lateral raises", sets: "3 x 15" },
+            { name: "Triceps pushdown", sets: "3 x 12" }
+        ],
+        "PULL_1": [
+            { name: "Lat pulldown", sets: "4 x 8-10" },
+            { name: "Seated cable row", sets: "3 x 10" },
+            { name: "Face pulls", sets: "3 x 15" },
+            { name: "Barbell / DB curl", sets: "3 x 12" },
+            { name: "Hammer curl", sets: "2 x 12" }
+        ],
+        "LEGS_1": [
+            { name: "Squat or leg press", sets: "4 x 8-10" },
+            { name: "Romanian deadlift", sets: "3 x 10" },
+            { name: "Leg curl", sets: "3 x 12" },
+            { name: "Walking lunges", sets: "2 x 12/leg" },
+            { name: "Calf raises", sets: "4 x 15" }
+        ],
+        "PUSH_2": [
+            { name: "Overhead press", sets: "4 x 8" },
+            { name: "Push-ups / chest press", sets: "3 x 12" },
+            { name: "Cable fly", sets: "3 x 12" },
+            { name: "Lateral raises", sets: "3 x 15" },
+            { name: "Overhead triceps ext.", sets: "3 x 12" }
+        ],
+        "PULL_2": [
+            { name: "Pull-ups / assisted", sets: "4 x 6-10" },
+            { name: "Single-arm DB row", sets: "3 x 10" },
+            { name: "Rear delt fly", sets: "3 x 15" },
+            { name: "Preacher / incline curl", sets: "3 x 12" },
+            { name: "Shrugs", sets: "3 x 12" }
+        ],
+        "LEGS_2": [
+            { name: "Leg press or squat", sets: "4 x 10" },
+            { name: "Hip thrust", sets: "3 x 10" },
+            { name: "Leg extension", sets: "3 x 12" },
+            { name: "Calf raises", sets: "3 x 15" },
+            { name: "Planks", sets: "3 x 45 sec" },
+            { name: "Leg raises", sets: "3 x 12" }
+        ]
+    };
+
+    function openWorkout(type, event) {
+        event.stopPropagation();
+        const modal = document.getElementById("workoutModal");
+        const title = document.getElementById("modalTitle");
+        const body = document.getElementById("modalBody");
+        
+        let titleText = type.replace('_1', ' (Routine 1)').replace('_2', ' (Routine 2)');
+        title.textContent = titleText;
+        body.innerHTML = "";
+
+        let list = workoutsData[type];
+        if(!list) list = workoutsData["PUSH_1"];
+
+        list.forEach(ex => {
+            body.innerHTML += `
+                <div class="exercise-item">
+                    <span class="exercise-name">${ex.name}</span>
+                    <span class="exercise-sets">${ex.sets}</span>
+                </div>
+            `;
+        });
+
+        modal.style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById("workoutModal").style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById("workoutModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const countDisplay = document.getElementById("count-display");
+        const totalDisplay = document.getElementById("total-display");
+        const rankDisplay = document.getElementById("rank-display");
+
+        totalDisplay.textContent = checkboxes.length;
+
+        function updateProgress() {
+            let checkedCount = 0;
+            checkboxes.forEach(chk => {
+                if (chk.checked) checkedCount++;
+            });
+            countDisplay.textContent = checkedCount;
+
+            let rank = "Winter Arc Recruit 🐣";
+            if (checkedCount >= 40) rank = "Winter Arc Beast 🦍🔥";
+            else if (checkedCount >= 25) rank = "Iron Addict 🦾";
+            else if (checkedCount >= 10) rank = "Hypertrophy Adept ⚡";
+            else if (checkedCount >= 3) rank = "Consistency Builder 🧱";
+
+            rankDisplay.textContent = "Rank: " + rank;
+        }
+
+        checkboxes.forEach(chk => {
+            const savedState = localStorage.getItem(chk.id);
+            if (savedState !== null) {
+                chk.checked = savedState === 'true';
+            }
+            
+            chk.addEventListener('change', () => {
+                localStorage.setItem(chk.id, chk.checked);
+                updateProgress();
+            });
+        });
+
+        updateProgress();
+    });
+</script>
+
+</body>
+</html>
