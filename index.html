@@ -178,11 +178,27 @@
       color: #ffb74d;
       font-weight: 600;
       font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .ex-name:hover {
+      color: #ffa726;
     }
 
     .ex-sets {
       color: #888;
       font-size: 0.8rem;
+    }
+
+    /* Nested Animation GIF Modal */
+    .animation-gif {
+      width: 100%;
+      height: 200px;
+      object-fit: contain;
+      background: #000;
+      border-radius: 8px;
+      margin: 15px 0;
     }
 
     .close-btn {
@@ -201,7 +217,7 @@
 <body>
 
   <h1>🔥 WINTER ARC TRACKER 🔥</h1>
-  <div class="subtitle">6-Day PPL Routine (Oct - Dec 2026)<br><small>(Tap any date box to view workout routine)</small></div>
+  <div class="subtitle">6-Day PPL Routine (Oct - Dec 2026)<br><small>(Tap any date box to view workout routine & animations)</small></div>
 
   <div class="rank-card">
     <div>Rank: <span id="rankTitle" class="rank-title">Recruit ⚡</span></div>
@@ -216,7 +232,17 @@
     <div class="modal-content">
       <h3 id="modalDateTitle" class="modal-title">Workout Routine</h3>
       <div id="modalRoutineList"></div>
-      <button class="close-btn" onclick="closeModal()">Close</button>
+      <button class="close-btn" onclick="closeModal('routineModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- Modal Popup for Exercise Animation Demo -->
+  <div id="animModal" class="modal-overlay" style="z-index: 1100;">
+    <div class="modal-content">
+      <h3 id="animTitle" class="modal-title" style="color: #4caf50;">Exercise Demo</h3>
+      <img id="animGif" class="animation-gif" src="" alt="Workout Animation">
+      <div id="animDesc" style="font-size: 0.85rem; color: #bbb; margin-bottom: 10px;"></div>
+      <button class="close-btn" onclick="closeModal('animModal')">Back to Routine</button>
     </div>
   </div>
 
@@ -229,28 +255,75 @@
 
     const weekHeaders = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-    const routineDetails = {
-      "PUSH": [
-        { name: "Bench Press", sets: "3 Sets x 8-12 reps" },
-        { name: "Overhead Press", sets: "3 Sets x 8-10 reps" },
-        { name: "Incline Dumbbell Press", sets: "3 Sets x 10-12 reps" },
-        { name: "Tricep Pushdown", sets: "4 Sets x 12-15 reps" }
-      ],
-      "PULL": [
-        { name: "Pull Ups", sets: "3 Sets x Max reps" },
-        { name: "Barbell Row", sets: "3 Sets x 8-10 reps" },
-        { name: "Lat Pulldown", sets: "3 Sets x 10-12 reps" },
-        { name: "Bicep Curls", sets: "4 Sets x 12 reps" }
-      ],
-      "LEGS": [
-        { name: "Squats", sets: "3 Sets x 8-10 reps" },
-        { name: "Deadlift", sets: "3 Sets x 5 reps" },
-        { name: "Leg Press", sets: "3 Sets x 10-12 reps" },
-        { name: "Calf Raises", sets: "4 Sets x 15-20 reps" }
-      ],
-      "REST": [
-        { name: "Rest & Recovery", sets: "Hydrate, Stretch & Sleep 💤" }
-      ]
+    // Exercise database with stable demonstration GIF assets
+    const exerciseDatabase = {
+      "Bench Press": {
+        sets: "3 Sets x 8-12 reps",
+        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Bench_Press/images/0.jpg",
+        desc: "Lie on bench, grip barbell slightly wider than shoulder-width, lower to chest and press up."
+      },
+      "Overhead Press": {
+        sets: "3 Sets x 8-10 reps",
+        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Shoulder_Press/images/0.jpg",
+        desc: "Press barbell overhead from upper chest level while keeping core tight."
+      },
+      "Incline Dumbbell Press": {
+        sets: "3 Sets x 10-12 reps",
+        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Incline_Dumbbell_Press/images/0.jpg",
+        desc: "Press dumbbells upward on an inclined bench targeting upper chest."
+      },
+      "Tricep Pushdown": {
+        sets: "4 Sets x 12-15 reps",
+        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Triceps_Pushdown/images/0.jpg",
+        desc: "Push cable attachment downward by extending elbows completely."
+      },
+      "Pull Ups": {
+        sets: "3 Sets x Max reps",
+        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pullup/images/0.jpg",
+        desc: "Pull body upward until chin clears the pull-up bar."
+      },
+      "Barbell Row": {
+        sets: "3 Sets x 8-10 reps",
+        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Bent_Over_Row/images/0.jpg",
+        desc: "Bend over at hips with flat back, pull barbell toward lower chest."
+      },
+      "Lat Pulldown": {
+        sets: "3 Sets x 10-12 reps",
+        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Lat_Pulldown/images/0.jpg",
+        desc: "Pull bar down toward upper chest, focusing on squeezing lats."
+      },
+      "Bicep Curls": {
+        sets: "4 Sets x 12 reps",
+        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Biceps_Curl/images/0.jpg",
+        desc: "Curl weights upward toward shoulders keeping elbows locked at sides."
+      },
+      "Squats": {
+        sets: "3 Sets x 8-10 reps",
+        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Full_Squat/images/0.jpg",
+        desc: "Lower hips back and down with barbell across upper back, then drive up."
+      },
+      "Deadlift": {
+        sets: "3 Sets x 5 reps",
+        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Deadlift/images/0.jpg",
+        desc: "Lift barbell off floor by extending hips and knees with a straight back."
+      },
+      "Leg Press": {
+        sets: "3 Sets x 10-12 reps",
+        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Sled_Leg_Press/images/0.jpg",
+        desc: "Press weighted platform away using legs while keeping lower back flat."
+      },
+      "Calf Raises": {
+        sets: "4 Sets x 15-20 reps",
+        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raise/images/0.jpg",
+        desc: "Raise heels up high onto toes, hold briefly, then lower slowly."
+      }
+    };
+
+    const routineMapping = {
+      "PUSH": ["Bench Press", "Overhead Press", "Incline Dumbbell Press", "Tricep Pushdown"],
+      "PULL": ["Pull Ups", "Barbell Row", "Lat Pulldown", "Bicep Curls"],
+      "LEGS": ["Squats", "Deadlift", "Leg Press", "Calf Raises"],
+      "REST": []
     };
 
     function renderCalendar() {
@@ -330,25 +403,38 @@
     function openDayRoutine(monthName, dayNum, type) {
       document.getElementById('modalDateTitle').innerText = `${type} - ${dayNum} ${monthName}`;
       
-      let listHtml = `<div style="font-size:0.9rem; color:#ff9800; margin-bottom:10px; font-weight:bold;">Routine Exercises:</div>`;
+      let listHtml = `<div style="font-size:0.85rem; color:#ff9800; margin-bottom:10px; font-weight:bold;">Tap any exercise for demo animation:</div>`;
       
-      routineDetails[type].forEach(ex => {
-        listHtml += `
-          <div class="exercise-row">
-            <div>
-              <div class="ex-name">${ex.name}</div>
-              <div class="ex-sets">${ex.sets}</div>
+      if (type === "REST") {
+        listHtml += `<div class="exercise-row"><div><div class="ex-name">Rest & Recovery</div><div class="ex-sets">Hydrate, Stretch & Sleep 💤</div></div></div>`;
+      } else {
+        routineMapping[type].forEach(exName => {
+          const exInfo = exerciseDatabase[exName];
+          listHtml += `
+            <div class="exercise-row">
+              <div>
+                <div class="ex-name" onclick="openExerciseDemo('${exName}')">${exName}</div>
+                <div class="ex-sets">${exInfo.sets}</div>
+              </div>
             </div>
-          </div>
-        `;
-      });
+          `;
+        });
+      }
 
       document.getElementById('modalRoutineList').innerHTML = listHtml;
       document.getElementById('routineModal').style.display = 'flex';
     }
 
-    function closeModal() {
-      document.getElementById('routineModal').style.display = 'none';
+    function openExerciseDemo(exName) {
+      const info = exerciseDatabase[exName];
+      document.getElementById('animTitle').innerText = exName;
+      document.getElementById('animGif').src = info.gif;
+      document.getElementById('animDesc').innerText = info.desc;
+      document.getElementById('animModal').style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
     }
 
     renderCalendar();
