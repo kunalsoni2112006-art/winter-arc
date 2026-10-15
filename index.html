@@ -9,7 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #030712; color: #f3f4f6; }
         .glow-cyan { box-shadow: 0 0 25px rgba(6, 182, 212, 0.25); }
-        .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(56, 189, 248, 0.15); }
+        .glass-panel { background: rgba(15, 23, 42, 0.90); backdrop-filter: blur(12px); border: 1px solid rgba(56, 189, 248, 0.2); }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #030712; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
@@ -73,8 +73,7 @@
                 <span class="text-[11px] font-bold text-slate-500">F</span>
                 <span class="text-[11px] font-bold text-slate-500">S</span>
             </div>
-            <div id="calendar-days" class="grid grid-cols-7 gap-1.5 text-center text-xs">
-            </div>
+            <div id="calendar-days" class="grid grid-cols-7 gap-1.5 text-center text-xs"></div>
         </section>
 
         <!-- 2. DAY SPLIT SELECTOR -->
@@ -102,8 +101,7 @@
         </div>
 
         <!-- EXERCISE LIST CONTAINER -->
-        <div id="exercise-container" class="space-y-4">
-        </div>
+        <div id="exercise-container" class="space-y-4"></div>
 
         <!-- SAVE & LOG WORKOUT BUTTON -->
         <button onclick="saveWorkoutLog()" class="w-full py-4 rounded-2xl font-extrabold text-sm uppercase tracking-wider bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 shadow-lg shadow-cyan-500/20 hover:opacity-95 transition active:scale-[0.99]">
@@ -142,7 +140,7 @@
     </main>
 
     <!-- DEMO MODAL -->
-    <div id="demo-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+    <div id="demo-modal" style="display: none;" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md items-center justify-center z-50 p-4">
         <div class="glass-panel w-full max-w-sm rounded-2xl p-5 border border-cyan-500/40 space-y-4 shadow-2xl relative">
             <div class="flex items-center justify-between">
                 <h3 id="modal-title" class="font-extrabold text-base text-cyan-300">Exercise Demo</h3>
@@ -157,7 +155,7 @@
     </div>
 
     <!-- STATS MODAL -->
-    <div id="stats-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+    <div id="stats-modal" style="display: none;" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md items-center justify-center z-50 p-4">
         <div class="glass-panel w-full max-w-sm rounded-2xl p-6 border border-cyan-500/40 space-y-4 shadow-2xl relative text-center">
             <div class="flex items-center justify-between">
                 <h3 class="font-extrabold text-base text-cyan-300">Winter Arc Elite Stats</h3>
@@ -182,7 +180,7 @@
     </div>
 
     <!-- GALLERY MODAL -->
-    <div id="gallery-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+    <div id="gallery-modal" style="display: none;" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md items-center justify-center z-50 p-4">
         <div class="glass-panel w-full max-w-md rounded-2xl p-6 border border-cyan-500/40 space-y-4 shadow-2xl relative max-h-[85vh] flex flex-col">
             <div class="flex items-center justify-between">
                 <h3 class="font-extrabold text-base text-cyan-300">Transformation Gallery</h3>
@@ -190,8 +188,7 @@
             </div>
             <p class="text-xs text-slate-400">Your weekly physique check photos uploaded on Sundays.</p>
             
-            <div id="gallery-grid" class="grid grid-cols-2 gap-3 overflow-y-auto p-1 flex-1">
-            </div>
+            <div id="gallery-grid" class="grid grid-cols-2 gap-3 overflow-y-auto p-1 flex-1"></div>
 
             <button onclick="closeGalleryModal()" class="w-full py-3 rounded-xl font-bold text-xs bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition">Close</button>
         </div>
@@ -325,6 +322,7 @@
             const el = document.getElementById(id);
             if(el) el.scrollIntoView({ behavior: 'smooth' });
         }
+        window.scrollToSection = scrollToSection;
 
         function switchSplit(splitKey, evt) {
             currentSplit = splitKey;
@@ -340,6 +338,7 @@
             document.getElementById('routine-desc').innerText = routine.desc;
             renderExercises();
         }
+        window.switchSplit = switchSplit;
 
         function renderExercises() {
             const container = document.getElementById('exercise-container');
@@ -398,7 +397,7 @@
                             </div>
                             <div class="flex items-center space-x-2">
                                 <span class="text-[10px] bg-slate-900 px-2.5 py-1 rounded-lg text-cyan-400 font-bold border border-slate-800">⏱ 60s Rest</span>
-                                <button onclick="openDemoModal('${ex.name}', '${ex.img}', '${ex.tip}')" class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 hover:bg-cyan-500 hover:text-slate-950 flex items-center justify-center font-bold text-xs transition">ℹ️</button>
+                                <button onclick="openDemoModal('${ex.name.replace(/'/g, "\\'")}', '${ex.img}', '${ex.tip.replace(/'/g, "\\'")}')" class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 hover:bg-cyan-500 hover:text-slate-950 flex items-center justify-center font-bold text-xs transition">ℹ️</button>
                             </div>
                         </div>
                         <div class="pt-1">
@@ -428,22 +427,21 @@
                 reader.readAsDataURL(file);
             }
         }
+        window.handleWeeklyPhotoUpload = handleWeeklyPhotoUpload;
 
-        // MODAL TOGGLES FIXED
+        // MODALS WITH RELIABLE INLINE DISPLAY TOGGLE
         function openDemoModal(name, imgPath, tipText) {
             document.getElementById('modal-title').innerText = name;
             document.getElementById('modal-img').src = imgPath;
             document.getElementById('modal-desc').innerText = tipText;
-            const el = document.getElementById('demo-modal');
-            el.classList.remove('hidden');
-            el.classList.add('flex');
+            document.getElementById('demo-modal').style.display = 'flex';
         }
+        window.openDemoModal = openDemoModal;
 
         function closeModal() {
-            const el = document.getElementById('demo-modal');
-            el.classList.remove('flex');
-            el.classList.add('hidden');
+            document.getElementById('demo-modal').style.display = 'none';
         }
+        window.closeModal = closeModal;
 
         function openStatsModal() {
             let rankName = "⚡ Rookie Arc";
@@ -463,16 +461,14 @@
             document.getElementById('stats-streak').innerText = `${streakCount} Days 🔥`;
             document.getElementById('stats-next-goal').innerText = nextGoalText;
 
-            const el = document.getElementById('stats-modal');
-            el.classList.remove('hidden');
-            el.classList.add('flex');
+            document.getElementById('stats-modal').style.display = 'flex';
         }
+        window.openStatsModal = openStatsModal;
 
         function closeStatsModal() {
-            const el = document.getElementById('stats-modal');
-            el.classList.remove('flex');
-            el.classList.add('hidden');
+            document.getElementById('stats-modal').style.display = 'none';
         }
+        window.closeStatsModal = closeStatsModal;
 
         function openGalleryModal() {
             const grid = document.getElementById('gallery-grid');
@@ -491,16 +487,14 @@
                 });
             }
 
-            const el = document.getElementById('gallery-modal');
-            el.classList.remove('hidden');
-            el.classList.add('flex');
+            document.getElementById('gallery-modal').style.display = 'flex';
         }
+        window.openGalleryModal = openGalleryModal;
 
         function closeGalleryModal() {
-            const el = document.getElementById('gallery-modal');
-            el.classList.remove('flex');
-            el.classList.add('hidden');
+            document.getElementById('gallery-modal').style.display = 'none';
         }
+        window.closeGalleryModal = closeGalleryModal;
 
         // REST TIMER ENGINE
         let restTimerInterval = null;
@@ -536,11 +530,13 @@
             restTimeLeftSeconds = Math.max(0, restTimeLeftSeconds + amount);
             updateRestDisplay();
         }
+        window.adjustRestTime = adjustRestTime;
 
         function stopRestTimer() {
             if (restTimerInterval) clearInterval(restTimerInterval);
             document.getElementById('rest-timer-bar').classList.add('translate-y-24', 'opacity-0');
         }
+        window.stopRestTimer = stopRestTimer;
 
         function toggleSet(exIndex, setNum) {
             const weightInput = document.getElementById(`w_${exIndex}_${setNum}`);
@@ -562,6 +558,7 @@
             }
             localStorage.setItem('winter_arc_logs', JSON.stringify(workoutData));
         }
+        window.toggleSet = toggleSet;
 
         function playBeep() {
             try {
@@ -584,6 +581,7 @@
             alert("Workout logged successfully & Streak updated!");
             renderCalendar();
         }
+        window.saveWorkoutLog = saveWorkoutLog;
 
         // CIRCULAR CYCLING STOPWATCH ENGINE
         let cyclingInterval = null;
@@ -619,12 +617,14 @@
                 }
             }, 1000);
         }
+        window.startCyclingTimer = startCyclingTimer;
 
         function pauseCyclingTimer() {
             isCyclingRunning = false;
             clearInterval(cyclingInterval);
             document.getElementById('cycling-status').innerText = "Paused";
         }
+        window.pauseCyclingTimer = pauseCyclingTimer;
 
         function resetCyclingTimer() {
             isCyclingRunning = false;
@@ -633,6 +633,7 @@
             updateCyclingDisplay();
             document.getElementById('cycling-status').innerText = "Ready";
         }
+        window.resetCyclingTimer = resetCyclingTimer;
 
         // CALENDAR LOGIC
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -641,6 +642,7 @@
             activeDate.setMonth(activeDate.getMonth() + direction);
             renderCalendar();
         }
+        window.changeMonth = changeMonth;
 
         function renderCalendar() {
             const year = activeDate.getFullYear();
@@ -681,6 +683,7 @@
             renderCalendar();
             renderExercises();
         }
+        window.selectCalendarDate = selectCalendarDate;
 
         function resetAllData() {
             if(confirm("Are you sure you want to reset all workout logs, gallery photos and streak history?")) {
@@ -693,6 +696,7 @@
                 renderExercises();
             }
         }
+        window.resetAllData = resetAllData;
 
         renderExercises();
         renderCalendar();
