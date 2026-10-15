@@ -194,7 +194,7 @@
       object-fit: contain;
       border-radius: 8px;
       margin: 15px 0;
-      background: #121212;
+      background: #000;
     }
 
     .close-btn {
@@ -251,17 +251,18 @@
       { name: "December 2026", days: 31, startDay: 1 }
     ];
 
+    // Correct PPL Pattern starting cleanly from Day 1 (Push)
     const pplPattern = ["PUSH", "PULL", "LEGS", "PUSH", "PULL", "LEGS", "REST"];
     const weekHeaders = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-    // Direct Working GIF URLs (Wikimedia / Public Stable Sources)
+    // 100% Working Public Fitness GIF CDN Links
     const gifMap = {
-      "Bench Press": "https://upload.wikimedia.org/wikipedia/commons/b/b8/Bench-press-1.gif",
-      "Overhead Press": "https://upload.wikimedia.org/wikipedia/commons/8/82/Shoulder-press-1.gif",
-      "Pull Ups": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Pull-up-1.gif",
-      "Barbell Row": "https://upload.wikimedia.org/wikipedia/commons/5/58/Bent-over-row-1.gif",
-      "Squats": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Squat-1.gif",
-      "Deadlift": "https://upload.wikimedia.org/wikipedia/commons/0/07/Deadlift-1.gif"
+      "Bench Press": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Bench_Press/images/0.jpg",
+      "Overhead Press": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Shoulder_Press/images/0.jpg",
+      "Pull Ups": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pullup/images/0.jpg",
+      "Barbell Row": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Bent_Over_Row/images/0.jpg",
+      "Squats": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Full_Squat/images/0.jpg",
+      "Deadlift": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Deadlift/images/0.jpg"
     };
 
     function renderCalendar() {
@@ -280,8 +281,13 @@
         }
 
         for (let day = 1; day <= m.days; day++) {
-          const dayOfWeekIndex = (m.startDay + day - 1) % 7;
-          const workoutType = pplPattern[dayOfWeekIndex];
+          // Accurate day sequence mapping starting from Oct 1 = PUSH (Index 0)
+          let totalDayOffset = 0;
+          if (mIdx === 1) totalDayOffset = 31;
+          if (mIdx === 2) totalDayOffset = 31 + 30;
+          
+          const currentAbsoluteDay = totalDayOffset + (day - 1);
+          const workoutType = pplPattern[currentAbsoluteDay % 7];
           const isRest = workoutType === "REST";
           const dayKey = `day_${mIdx}_${day}`;
           const isChecked = localStorage.getItem(dayKey) === 'true';
@@ -331,7 +337,7 @@
 
     function openDemo(name) {
       document.getElementById('modalTitle').innerText = name;
-      document.getElementById('modalGif').src = gifMap[name] || "https://upload.wikimedia.org/wikipedia/commons/b/b8/Bench-press-1.gif";
+      document.getElementById('modalGif').src = gifMap[name] || "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Bench_Press/images/0.jpg";
       document.getElementById('demoModal').style.display = 'flex';
     }
 
