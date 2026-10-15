@@ -90,11 +90,20 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      min-height: 52px;
+      min-height: 55px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: 0.2s;
+    }
+
+    .day-box:hover {
+      border-color: #ff9800;
     }
 
     .day-box.empty {
       background: transparent;
+      cursor: default;
+      border: none;
     }
 
     .day-number {
@@ -104,7 +113,7 @@
     }
 
     .workout-type {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       color: #ffb74d;
       font-weight: 600;
       margin: 2px 0;
@@ -115,46 +124,10 @@
     }
 
     .day-box input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
+      width: 15px;
+      height: 15px;
       accent-color: #ff9800;
       cursor: pointer;
-    }
-
-    .routine-container {
-      width: 100%;
-      max-width: 420px;
-      background: #1e1e1e;
-      border-radius: 10px;
-      padding: 15px;
-      box-sizing: border-box;
-      margin-bottom: 20px;
-    }
-
-    .exercise-list {
-      list-style: none;
-      padding: 0;
-      margin: 10px 0 0 0;
-    }
-
-    .exercise-item {
-      padding: 8px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #2a2a2a;
-    }
-
-    .exercise-name {
-      color: #ffb74d;
-      cursor: pointer;
-      text-decoration: underline;
-      font-size: 0.9rem;
-    }
-
-    .exercise-detail {
-      font-size: 0.8rem;
-      color: #888;
     }
 
     /* Modal Styling */
@@ -175,26 +148,41 @@
       background: #1e1e1e;
       padding: 20px;
       border-radius: 12px;
-      width: 85%;
-      max-width: 340px;
+      width: 88%;
+      max-width: 360px;
       text-align: center;
       border: 1px solid #ff9800;
       box-sizing: border-box;
+      max-height: 85vh;
+      overflow-y: auto;
     }
 
     .modal-title {
       color: #ff9800;
       margin-top: 0;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
+      border-bottom: 1px solid #333;
+      padding-bottom: 8px;
     }
 
-    .modal-gif {
-      width: 100%;
-      height: 200px;
-      object-fit: contain;
-      border-radius: 8px;
-      margin: 15px 0;
-      background: #000;
+    .exercise-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #2a2a2a;
+      text-align: left;
+    }
+
+    .ex-name {
+      color: #ffb74d;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .ex-sets {
+      color: #888;
+      font-size: 0.8rem;
     }
 
     .close-btn {
@@ -206,68 +194,70 @@
       border-radius: 6px;
       width: 100%;
       cursor: pointer;
+      margin-top: 15px;
     }
   </style>
 </head>
 <body>
 
   <h1>🔥 WINTER ARC TRACKER 🔥</h1>
-  <div class="subtitle">6-Day PPL Routine (Oct - Dec 2026)<br><small>(Tap exercise name for demo animation)</small></div>
+  <div class="subtitle">6-Day PPL Routine (Oct - Dec 2026)<br><small>(Tap any date box to view workout routine)</small></div>
 
   <div class="rank-card">
     <div>Rank: <span id="rankTitle" class="rank-title">Recruit ⚡</span></div>
-    <div style="font-size:0.85rem; color:#aaa; margin-top:4px;">Workouts Done: <span id="doneCount">0</span> / 79</div>
+    <div style="font-size:0.85rem; color:#aaa; margin-top:4px;">Workouts Done: <span id="doneCount">0</span> / 78</div>
   </div>
 
   <!-- Calendar Container -->
   <div id="calendar"></div>
 
-  <!-- Exercise Demo Routines -->
-  <div class="routine-container">
-    <h3 style="color:#ff9800; margin-top:0;">🏋️ Exercise Demos</h3>
-    <ul class="exercise-list">
-      <li class="exercise-item"><span class="exercise-name" onclick="openDemo('Bench Press')">Bench Press</span><span class="exercise-detail">Push</span></li>
-      <li class="exercise-item"><span class="exercise-name" onclick="openDemo('Overhead Press')">Overhead Press</span><span class="exercise-detail">Push</span></li>
-      <li class="exercise-item"><span class="exercise-name" onclick="openDemo('Pull Ups')">Pull Ups</span><span class="exercise-detail">Pull</span></li>
-      <li class="exercise-item"><span class="exercise-name" onclick="openDemo('Barbell Row')">Barbell Row</span><span class="exercise-detail">Pull</span></li>
-      <li class="exercise-item"><span class="exercise-name" onclick="openDemo('Squats')">Squats</span><span class="exercise-detail">Legs</span></li>
-      <li class="exercise-item"><span class="exercise-name" onclick="openDemo('Deadlift')">Deadlift</span><span class="exercise-detail">Legs</span></li>
-    </ul>
-  </div>
-
-  <!-- Modal Popup -->
-  <div id="demoModal" class="modal-overlay">
+  <!-- Modal Popup for Day Routine -->
+  <div id="routineModal" class="modal-overlay">
     <div class="modal-content">
-      <h3 id="modalTitle" class="modal-title">Exercise Name</h3>
-      <img id="modalGif" class="modal-gif" src="" alt="Workout Animation">
-      <button class="close-btn" onclick="closeDemo()">Close</button>
+      <h3 id="modalDateTitle" class="modal-title">Workout Routine</h3>
+      <div id="modalRoutineList"></div>
+      <button class="close-btn" onclick="closeModal()">Close</button>
     </div>
   </div>
 
   <script>
     const monthsData = [
-      { name: "October 2026", days: 31, startDay: 3 },
-      { name: "November 2026", days: 30, startDay: 6 },
-      { name: "December 2026", days: 31, startDay: 1 }
+      { name: "October 2026", days: 31, startDay: 3 }, // Thu start
+      { name: "November 2026", days: 30, startDay: 6 }, // Sun start
+      { name: "December 2026", days: 31, startDay: 1 }  // Tue start
     ];
 
-    // Correct PPL Pattern starting cleanly from Day 1 (Push)
-    const pplPattern = ["PUSH", "PULL", "LEGS", "PUSH", "PULL", "LEGS", "REST"];
     const weekHeaders = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-    // 100% Working Public Fitness GIF CDN Links
-    const gifMap = {
-      "Bench Press": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Bench_Press/images/0.jpg",
-      "Overhead Press": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Shoulder_Press/images/0.jpg",
-      "Pull Ups": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pullup/images/0.jpg",
-      "Barbell Row": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Bent_Over_Row/images/0.jpg",
-      "Squats": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Full_Squat/images/0.jpg",
-      "Deadlift": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Deadlift/images/0.jpg"
+    const routineDetails = {
+      "PUSH": [
+        { name: "Bench Press", sets: "3 Sets x 8-12 reps" },
+        { name: "Overhead Press", sets: "3 Sets x 8-10 reps" },
+        { name: "Incline Dumbbell Press", sets: "3 Sets x 10-12 reps" },
+        { name: "Tricep Pushdown", sets: "4 Sets x 12-15 reps" }
+      ],
+      "PULL": [
+        { name: "Pull Ups", sets: "3 Sets x Max reps" },
+        { name: "Barbell Row", sets: "3 Sets x 8-10 reps" },
+        { name: "Lat Pulldown", sets: "3 Sets x 10-12 reps" },
+        { name: "Bicep Curls", sets: "4 Sets x 12 reps" }
+      ],
+      "LEGS": [
+        { name: "Squats", sets: "3 Sets x 8-10 reps" },
+        { name: "Deadlift", sets: "3 Sets x 5 reps" },
+        { name: "Leg Press", sets: "3 Sets x 10-12 reps" },
+        { name: "Calf Raises", sets: "4 Sets x 15-20 reps" }
+      ],
+      "REST": [
+        { name: "Rest & Recovery", sets: "Hydrate, Stretch & Sleep 💤" }
+      ]
     };
 
     function renderCalendar() {
       const calendarEl = document.getElementById('calendar');
       calendarEl.innerHTML = '';
+
+      let workoutSeqCount = 0; // To track PPL sequence skipping Sundays
 
       monthsData.forEach((m, mIdx) => {
         const monthDiv = document.createElement('div');
@@ -281,22 +271,24 @@
         }
 
         for (let day = 1; day <= m.days; day++) {
-          // Accurate day sequence mapping starting from Oct 1 = PUSH (Index 0)
-          let totalDayOffset = 0;
-          if (mIdx === 1) totalDayOffset = 31;
-          if (mIdx === 2) totalDayOffset = 31 + 30;
-          
-          const currentAbsoluteDay = totalDayOffset + (day - 1);
-          const workoutType = pplPattern[currentAbsoluteDay % 7];
+          const dayOfWeekIndex = (m.startDay + day - 1) % 7; // 0=Mon ... 6=Sun
+          let workoutType = "REST";
+
+          if (dayOfWeekIndex !== 6) { // Not Sunday
+            const pplCycle = ["PUSH", "PULL", "LEGS"];
+            workoutType = pplCycle[workoutSeqCount % 3];
+            workoutSeqCount++;
+          }
+
           const isRest = workoutType === "REST";
           const dayKey = `day_${mIdx}_${day}`;
           const isChecked = localStorage.getItem(dayKey) === 'true';
 
           html += `
-            <div class="day-box">
+            <div class="day-box" onclick="openDayRoutine('${m.name}', ${day}, '${workoutType}')">
               <div class="day-number">${day}</div>
               <div class="workout-type ${isRest ? 'rest' : ''}">${workoutType}</div>
-              ${!isRest ? `<input type="checkbox" id="${dayKey}" ${isChecked ? 'checked' : ''} onchange="toggleCheck('${dayKey}')">` : ''}
+              ${!isRest ? `<input type="checkbox" id="${dayKey}" ${isChecked ? 'checked' : ''} onclick="event.stopPropagation()" onchange="toggleCheck('${dayKey}')">` : '<div style="height:15px;"></div>'}
             </div>
           `;
         }
@@ -330,19 +322,33 @@
       if (count >= 10) rank = "Hypertrophy Adept ⚡";
       if (count >= 25) rank = "Iron Disciple 🔥";
       if (count >= 45) rank = "Arc Master 💪";
-      if (count >= 65) rank = "Unstoppable Beast 👑";
+      if (count >= 60) rank = "Unstoppable Beast 👑";
 
       document.getElementById('rankTitle').innerText = rank;
     }
 
-    function openDemo(name) {
-      document.getElementById('modalTitle').innerText = name;
-      document.getElementById('modalGif').src = gifMap[name] || "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Bench_Press/images/0.jpg";
-      document.getElementById('demoModal').style.display = 'flex';
+    function openDayRoutine(monthName, dayNum, type) {
+      document.getElementById('modalDateTitle.innerText = `${type} - ${dayNum} ${monthName}`;
+      
+      let listHtml = `<div style="font-size:0.9rem; color:#ff9800; margin-bottom:10px; font-weight:bold;">Routine for ${type}:</div>`;
+      
+      routineDetails[type].forEach(ex => {
+        listHtml += `
+          <div class="exercise-row">
+            <div>
+              <div class="ex-name">${ex.name}</div>
+              <div class="ex-sets">${ex.sets}</div>
+            </div>
+          </div>
+        `;
+      });
+
+      document.getElementById('modalRoutineList').innerHTML = listHtml;
+      document.getElementById('routineModal').style.display = 'flex';
     }
 
-    function closeDemo() {
-      document.getElementById('demoModal').style.display = 'none';
+    function closeModal() {
+      document.getElementById('routineModal').style.display = 'none';
     }
 
     renderCalendar();
