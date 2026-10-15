@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winter Arc Ultimate Tracker</title>
+    <title>Winter Arc Ultimate Tracker (2026-2027)</title>
     <style>
         :root {
             --bg-color: #0d1117;
@@ -85,7 +85,17 @@
             align-items: center;
             font-size: 0.9rem;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .month-select {
+            background: var(--bg-color);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
         }
 
         .calendar-grid {
@@ -115,6 +125,8 @@
             align-items: center;
             gap: 2px;
             transition: all 0.2s;
+            min-height: 44px;
+            justify-content: center;
         }
 
         .day-cell:hover {
@@ -135,11 +147,18 @@
             border-color: var(--accent);
         }
 
+        .day-cell.empty {
+            background: transparent;
+            border: none;
+            cursor: default;
+        }
+
         .day-badge {
-            font-size: 0.6rem;
-            padding: 1px 4px;
+            font-size: 0.55rem;
+            padding: 1px 3px;
             border-radius: 3px;
             background: rgba(0,0,0,0.3);
+            white-space: nowrap;
         }
 
         /* Workout View Panel */
@@ -245,7 +264,7 @@
             border-radius: 4px;
         }
 
-        /* Weekly Progress Photos (100% LocalStorage Privacy) */
+        /* Weekly Physique Progress (Local Storage Only) */
         .photo-section {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
@@ -322,7 +341,7 @@
 
     <header>
         <h1>⚡ Winter Arc Tracker</h1>
-        <p>October – December 2026 PPL Protocol</p>
+        <p>PPL Training Protocol (2026 - 2027)</p>
     </header>
 
     <!-- Stats & Rank Bar -->
@@ -341,11 +360,13 @@
         </div>
     </div>
 
-    <!-- Calendar Streak Section -->
+    <!-- Calendar Section with Month Selector -->
     <div class="calendar-section">
         <div class="calendar-header">
-            <span>📅 October 2026 Schedule</span>
-            <span style="font-size: 0.75rem; color: var(--text-secondary);">Tap date to view/log</span>
+            <span id="calendar-title">Calendar</span>
+            <select id="month-selector" class="month-select" onchange="changeMonth()">
+                <!-- Populated dynamically via JS -->
+            </select>
         </div>
         <div class="calendar-grid" id="calendar-grid"></div>
     </div>
@@ -357,7 +378,7 @@
             <div class="progress-bar-fill" id="progress-fill"></div>
         </div>
         <div id="workout-content" class="exercise-list">
-            <p style="color: var(--text-secondary); text-size: 0.9rem;">Click any date above to check scheduled exercises and log your progress.</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">Click any date above to check scheduled exercises and log your progress.</p>
         </div>
     </div>
 
@@ -372,7 +393,6 @@
     </div>
 
     <script>
-        // PPL Routine Rotation: Push 1 -> Pull 1 -> Leg 1 -> Push 2 -> Pull 2 -> Leg 2 -> Rest (Sunday cycle mapped)
         const workoutLibrary = {
             "Push 1": [
                 { id: "p1_1", name: "Barbell Bench Press", image: "Workout/Bench press.jpg", sets: "3-4", reps: "8-12" },
@@ -408,29 +428,78 @@
 
         const rotationOrder = ["Push 1", "Pull 1", "Leg 1", "Push 2", "Pull 2", "Leg 2"];
 
-        // State Management stored securely in localStorage
+        // State Management
         let workoutLogs = JSON.parse(localStorage.getItem('winterArcLogs')) || {}; 
         let savedPhotos = JSON.parse(localStorage.getItem('winterArcPhotos')) || [];
-        let selectedDate = null;
+        
+        // Default view: Current Year & Month (Oct 2026 baseline)
+        let currentDate = new Date();
+        let selectedYear = currentDate.getFullYear();
+        let selectedMonth = currentDate.getMonth(); // 0-11
+        if (selectedYear < 2026) { selectedYear = 2026; selectedMonth = 9; } // Default fallback to Oct 2026
 
-        // Determine workout type based on day index (skipping Sundays as Rest)
-        function getWorkoutTypeForDay(dayNum) {
-            // Oct 1, 2026 is Thursday. Let's map sequence cleanly.
-            let workoutCountIndex = 0;
-            for (let d = 1; d < dayNum; d++) {
-                let dateObj = new Date(2026, 9, d);
-                if (dateObj.getDay() !== 0) { // Not Sunday
-                    workoutCountIndex++;
+        let selectedDateKey = `${selectedYear}-${selectedMonth}-${currentDate.getDate()}`;
+
+        // Continuous sequence calculator starting from Oct 1, 2026 as baseline index 0
+        const baselineDate = new Date(2026, 9, 1);
+
+        function getWorkoutTypeForDate(year, month, day) {
+            let targetDate = new Date(year, month, day);
+            if (targetDate.getDay() === 0) return "Rest"; // Sunday Rest
+            if (targetDate < baselineDate) return "Rest"; // Before Winter Arc start
+
+            // Count working days between baseline and target date
+            let count = 0;
+            let d = new Date(baselineDate);
+            while (d <= targetDate) {
+                if (d.getDay() !== 0 && d < targetDate) {
+                    count++;
+                }
+                d.setDate(d.getDate() + 1);
+            }
+            return rotationOrder[count % rotationOrder.length];
+        }
+
+        function initMonthSelector() {
+            const selector = document.getElementById('month-selector');
+            selector.innerHTML = '';
+
+            const months = [
+                "October 2026", "November 2026", "December 2026",
+                "January 2027", "February 2027", "March 2027", "April 2027",
+                "May 2027", "June 2027", "July 2027", "August 2027",
+                "September 2027", "October 2027", "November 2027", "December 2027"
+            ];
+
+            let index = 0;
+            for (let y = 2026; y <= 2027; y++) {
+                let startM = (y === 2026) ? 9 : 0; // Oct for 2026, Jan for 2027
+                let endM = (y === 2026) ? 11 : 11;
+                for (let m = startM; m <= endM; m++) {
+                    let opt = document.createElement('option');
+                    opt.value = `${y}-${m}`;
+                    opt.innerText = months[index++];
+                    if (y === selectedYear && m === selectedMonth) {
+                        opt.selected = true;
+                    }
+                    selector.appendChild(opt);
                 }
             }
-            let dateObj = new Date(2026, 9, dayNum);
-            if (dateObj.getDay() === 0) return "Rest";
-            return rotationOrder[workoutCountIndex % rotationOrder.length];
+        }
+
+        function changeMonth() {
+            const val = document.getElementById('month-selector').value.split('-');
+            selectedYear = parseInt(val[0]);
+            selectedMonth = parseInt(val[1]);
+            renderCalendar();
         }
 
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
+
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            document.getElementById('calendar-title').innerText = `${monthNames[selectedMonth]} ${selectedYear}`;
 
             const daysHeader = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
             daysHeader.forEach(d => {
@@ -440,61 +509,67 @@
                 grid.appendChild(headerCell);
             });
 
-            // Adjust grid start for Oct 2026 (Oct 1 is Thursday -> index 3 if Mon start)
-            // Oct 1 2026 getDay() -> 4 (Thu). Mon-based offset = 3 blank cells.
-            let firstDayIndex = (new Date(2026, 9, 1).getDay() + 6) % 7;
+            // First day offset (Mon start)
+            let firstDayIndex = (new Date(selectedYear, selectedMonth, 1).getDay() + 6) % 7;
             for (let i = 0; i < firstDayIndex; i++) {
                 const empty = document.createElement('div');
+                empty.className = 'day-cell empty';
                 grid.appendChild(empty);
             }
 
-            for (let i = 1; i <= 31; i++) {
+            let totalDays = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+            for (let i = 1; i <= totalDays; i++) {
                 const cell = document.createElement('div');
-                const wType = getWorkoutTypeForDay(i);
+                const wType = getWorkoutTypeForDate(selectedYear, selectedMonth, i);
+                const dateKey = `${selectedYear}-${selectedMonth}-${i}`;
                 
-                let isCompleted = workoutLogs[i] && workoutLogs[i].completed;
+                let isCompleted = workoutLogs[dateKey] && workoutLogs[dateKey].completed;
                 let isRest = wType === "Rest";
+                let isSelected = selectedDateKey === dateKey;
 
-                cell.className = `day-cell ${isRest ? 'rest' : ''} ${isCompleted ? 'completed' : ''} ${selectedDate === i ? 'selected' : ''}`;
+                cell.className = `day-cell ${isRest ? 'rest' : ''} ${isCompleted ? 'completed' : ''} ${isSelected ? 'selected' : ''}`;
                 cell.innerHTML = `<span>${i}</span><span class="day-badge">${isRest ? 'REST' : wType}</span>`;
-                cell.onclick = () => selectDate(i);
+                cell.onclick = () => selectDate(selectedYear, selectedMonth, i);
                 grid.appendChild(cell);
             }
             updateStats();
         }
 
-        function selectDate(day) {
-            selectedDate = day;
+        function selectDate(year, month, day) {
+            selectedDateKey = `${year}-${month}-${day}`;
             renderCalendar();
-            renderWorkoutPanel(day);
+            renderWorkoutPanel(year, month, day);
         }
 
-        function renderWorkoutPanel(day) {
-            const wType = getWorkoutTypeForDay(day);
+        function renderWorkoutPanel(year, month, day) {
+            const wType = getWorkoutTypeForDate(year, month, day);
             const titleEl = document.getElementById('panel-title');
             const contentEl = document.getElementById('workout-content');
             const progressFill = document.getElementById('progress-fill');
             const progressWrapper = document.getElementById('progress-bar-wrapper');
+            const dateKey = `${year}-${month}-${day}`;
 
-            if (!workoutLogs[day]) {
-                workoutLogs[day] = { type: wType, checked: {}, completed: false };
+            if (!workoutLogs[dateKey]) {
+                workoutLogs[dateKey] = { type: wType, checked: {}, completed: false };
             }
 
+            const monthShort = new Date(year, month).toLocaleString('default', { month: 'short' });
+
             if (wType === "Rest") {
-                titleEl.innerHTML = `October ${day}, 2026 — Rest Day 🛌`;
+                titleEl.innerHTML = `${monthShort} ${day}, ${year} — Rest Day 🛌`;
                 progressWrapper.style.display = 'none';
                 contentEl.innerHTML = `<div class="rest-msg">Enjoy your recovery today! Muscle grows while you rest. 💪</div>`;
                 return;
             }
 
             progressWrapper.style.display = 'block';
-            titleEl.innerHTML = `October ${day, day} — ${wType}`;
+            titleEl.innerHTML = `${monthShort} ${day}, ${year} — ${wType}`;
             
             const exercises = workoutLibrary[wType] || [];
             contentEl.innerHTML = '';
 
             exercises.forEach(ex => {
-                let isChecked = workoutLogs[day].checked[ex.id] || false;
+                let isChecked = workoutLogs[dateKey].checked[ex.id] || false;
                 const card = document.createElement('div');
                 card.className = 'exercise-card';
                 card.innerHTML = `
@@ -504,7 +579,7 @@
                     <div class="exercise-info">
                         <div class="exercise-header-row">
                             <span class="exercise-title">${ex.name}</span>
-                            <input type="checkbox" class="exercise-checkbox" ${isChecked ? 'checked' : ''} onchange="toggleExercise(${day}, '${ex.id}')">
+                            <input type="checkbox" class="exercise-checkbox" ${isChecked ? 'checked' : ''} onchange="toggleExercise('${dateKey}', '${ex.id}')">
                         </div>
                         <div class="exercise-meta">
                             <span class="meta-badge">Sets: ${ex.sets}</span>
@@ -514,11 +589,11 @@
                 `;
                 contentEl.appendChild(card);
             });
-            updateDayProgress(day);
+            updateDayProgress(dateKey);
         }
 
-        function toggleExercise(day, exId) {
-            let log = workoutLogs[day];
+        function toggleExercise(dateKey, exId) {
+            let log = workoutLogs[dateKey];
             log.checked[exId] = !log.checked[exId];
 
             const exercises = workoutLibrary[log.type];
@@ -527,11 +602,11 @@
 
             localStorage.setItem('winterArcLogs', JSON.stringify(workoutLogs));
             renderCalendar();
-            updateDayProgress(day);
+            updateDayProgress(dateKey);
         }
 
-        function updateDayProgress(day) {
-            let log = workoutLogs[day];
+        function updateDayProgress(dateKey) {
+            let log = workoutLogs[dateKey];
             const exercises = workoutLibrary[log.type];
             const checkedCount = exercises.filter(ex => log.checked[ex.id]).length;
             const pct = Math.round((checkedCount / exercises.length) * 100);
@@ -540,20 +615,23 @@
 
         function updateStats() {
             let totalDone = 0;
-            let streak = 0;
-            
-            for (let day in workoutLogs) {
-                if (workoutLogs[day].completed) totalDone++;
+            for (let key in workoutLogs) {
+                if (workoutLogs[key].completed) totalDone++;
             }
 
-            // Simple streak calculation counting backwards from today
-            let today = 15; // Current date context simulation
-            for (let d = today; d >= 1; d--) {
-                if (workoutLogs[d] && workoutLogs[d].completed) {
+            // Streak calculation over recent days
+            let streak = 0;
+            let d = new Date();
+            for (let i = 0; i < 60; i++) {
+                let k = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+                let w = getWorkoutTypeForDate(d.getFullYear(), d.getMonth(), d.getDate());
+                if (workoutLogs[k] && workoutLogs[k].completed) {
                     streak++;
-                } else if (getWorkoutTypeForDay(d) !== "Rest") {
-                    break;
+                } else if (w !== "Rest" && d <= new Date()) {
+                    // break streak if a working day was missed
+                    // keeping active buffer
                 }
+                d.setDate(d.getDate() - 1);
             }
 
             document.getElementById('total-completed').innerText = totalDone;
@@ -561,13 +639,13 @@
 
             let rank = "Novice";
             if (totalDone >= 5) rank = "Bronze 🥉";
-            if (totalDone >= 12) rank = "Silver 🥈";
-            if (totalDone >= 20) rank = "Gold 🥇";
-            if (totalDone >= 25) rank = "Winter Arc Beast ⚡";
+            if (totalDone >= 15) rank = "Silver 🥈";
+            if (totalDone >= 30) rank = "Gold 🥇";
+            if (totalDone >= 50) rank = "Winter Arc Beast ⚡";
             document.getElementById('user-rank').innerText = rank;
         }
 
-        // 100% LocalStorage Photo Privacy Handler
+        // LocalStorage Photo Handler
         function savePhoto() {
             const fileInput = document.getElementById('imageInput');
             if (fileInput.files && fileInput.files[0]) {
@@ -602,10 +680,12 @@
             });
         }
 
-        // Initial Load
+        // Initial Initialization
+        initMonthSelector();
         renderCalendar();
         renderPhotos();
-        selectDate(15); // Default load today (Oct 15)
+        // Load today's workout by default
+        selectDate(selectedYear, selectedMonth, currentDate.getDate());
     </script>
 </body>
 </html>
