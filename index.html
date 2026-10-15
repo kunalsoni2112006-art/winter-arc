@@ -130,7 +130,6 @@
       cursor: pointer;
     }
 
-    /* Modal Styling */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -182,23 +181,19 @@
       text-decoration: underline;
     }
 
-    .ex-name:hover {
-      color: #ffa726;
-    }
-
     .ex-sets {
       color: #888;
       font-size: 0.8rem;
     }
 
-    /* Nested Animation GIF Modal */
     .animation-gif {
       width: 100%;
-      height: 200px;
+      height: 220px;
       object-fit: contain;
       background: #000;
       border-radius: 8px;
       margin: 15px 0;
+      border: 1px solid #ff9800;
     }
 
     .close-btn {
@@ -217,17 +212,15 @@
 <body>
 
   <h1>🔥 WINTER ARC TRACKER 🔥</h1>
-  <div class="subtitle">6-Day PPL Routine (Oct - Dec 2026)<br><small>(Tap any date box to view workout routine & animations)</small></div>
+  <div class="subtitle">6-Day PPL Routine (Oct - Dec 2026)<br><small>(Tap any date box to view workout routine)</small></div>
 
   <div class="rank-card">
     <div>Rank: <span id="rankTitle" class="rank-title">Recruit ⚡</span></div>
     <div style="font-size:0.85rem; color:#aaa; margin-top:4px;">Workouts Done: <span id="doneCount">0</span> / 78</div>
   </div>
 
-  <!-- Calendar Container -->
   <div id="calendar"></div>
 
-  <!-- Modal Popup for Day Routine -->
   <div id="routineModal" class="modal-overlay">
     <div class="modal-content">
       <h3 id="modalDateTitle" class="modal-title">Workout Routine</h3>
@@ -236,86 +229,84 @@
     </div>
   </div>
 
-  <!-- Modal Popup for Exercise Animation Demo -->
   <div id="animModal" class="modal-overlay" style="z-index: 1100;">
     <div class="modal-content">
       <h3 id="animTitle" class="modal-title" style="color: #4caf50;">Exercise Demo</h3>
       <img id="animGif" class="animation-gif" src="" alt="Workout Animation">
-      <div id="animDesc" style="font-size: 0.85rem; color: #bbb; margin-bottom: 10px;"></div>
+      <div id="animDesc" style="font-size: 0.85rem; color: #ccc; margin-bottom: 10px; line-height: 1.4;"></div>
       <button class="close-btn" onclick="closeModal('animModal')">Back to Routine</button>
     </div>
   </div>
 
   <script>
     const monthsData = [
-      { name: "October 2026", days: 31, startDay: 3 }, // Thu start
-      { name: "November 2026", days: 30, startDay: 6 }, // Sun start
-      { name: "December 2026", days: 31, startDay: 1 }  // Tue start
+      { name: "October 2026", days: 31, startDay: 3 },
+      { name: "November 2026", days: 30, startDay: 6 },
+      { name: "December 2026", days: 31, startDay: 1 }
     ];
 
     const weekHeaders = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-    // Exercise database with stable demonstration GIF assets
     const exerciseDatabase = {
       "Bench Press": {
         sets: "3 Sets x 8-12 reps",
-        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Bench_Press/images/0.jpg",
-        desc: "Lie on bench, grip barbell slightly wider than shoulder-width, lower to chest and press up."
+        gif: "Gifs/bench press.gif",
+        desc: "Lie flat on bench, grip barbell slightly wider than shoulder-width, lower smoothly to mid-chest and press up."
       },
       "Overhead Press": {
         sets: "3 Sets x 8-10 reps",
-        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Shoulder_Press/images/0.jpg",
-        desc: "Press barbell overhead from upper chest level while keeping core tight."
+        gif: "",
+        desc: "Stand tall with core tight, hold barbell at upper chest level and press straight overhead."
       },
       "Incline Dumbbell Press": {
         sets: "3 Sets x 10-12 reps",
-        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Incline_Dumbbell_Press/images/0.jpg",
-        desc: "Press dumbbells upward on an inclined bench targeting upper chest."
+        gif: "",
+        desc: "Press dumbbells upward on an inclined bench targeting the upper chest."
       },
       "Tricep Pushdown": {
         sets: "4 Sets x 12-15 reps",
-        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Triceps_Pushdown/images/0.jpg",
-        desc: "Push cable attachment downward by extending elbows completely."
+        gif: "",
+        desc: "Keep elbows pinned to your sides, push cable bar down fully and squeeze triceps."
       },
       "Pull Ups": {
         sets: "3 Sets x Max reps",
-        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pullup/images/0.jpg",
-        desc: "Pull body upward until chin clears the pull-up bar."
+        gif: "",
+        desc: "Pull your body upward until your chin clears the bar with controlled descent."
       },
       "Barbell Row": {
         sets: "3 Sets x 8-10 reps",
-        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Bent_Over_Row/images/0.jpg",
-        desc: "Bend over at hips with flat back, pull barbell toward lower chest."
+        gif: "",
+        desc: "Hinge at hips with flat back, pull barbell toward lower ribs, squeezing back."
       },
       "Lat Pulldown": {
         sets: "3 Sets x 10-12 reps",
-        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Lat_Pulldown/images/0.jpg",
-        desc: "Pull bar down toward upper chest, focusing on squeezing lats."
+        gif: "",
+        desc: "Grab wide bar, pull down smoothly toward upper chest while leaning back slightly."
       },
       "Bicep Curls": {
         sets: "4 Sets x 12 reps",
-        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Biceps_Curl/images/0.jpg",
-        desc: "Curl weights upward toward shoulders keeping elbows locked at sides."
+        gif: "",
+        desc: "Keep upper arms stationary, curl dumbbells upward toward shoulders and contract biceps."
       },
       "Squats": {
         sets: "3 Sets x 8-10 reps",
-        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Full_Squat/images/0.jpg",
-        desc: "Lower hips back and down with barbell across upper back, then drive up."
+        gif: "",
+        desc: "Rest bar on upper traps, break at hips and knees, squat deep, then drive through heels."
       },
       "Deadlift": {
         sets: "3 Sets x 5 reps",
-        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Deadlift/images/0.jpg",
-        desc: "Lift barbell off floor by extending hips and knees with a straight back."
+        gif: "",
+        desc: "Keep spine neutral, grip bar tightly, drive through floor with legs and lock hips."
       },
       "Leg Press": {
         sets: "3 Sets x 10-12 reps",
-        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Sled_Leg_Press/images/0.jpg",
-        desc: "Press weighted platform away using legs while keeping lower back flat."
+        gif: "",
+        desc: "Place feet on platform, lower sled securely to 90 degrees and press back up."
       },
       "Calf Raises": {
         sets: "4 Sets x 15-20 reps",
-        gif: "https://images.weserv.nl/?url=https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raise/images/0.jpg",
-        desc: "Raise heels up high onto toes, hold briefly, then lower slowly."
+        gif: "",
+        desc: "Stand on edge of platform, drop heels for deep stretch and push up high onto toes."
       }
     };
 
@@ -403,7 +394,7 @@
     function openDayRoutine(monthName, dayNum, type) {
       document.getElementById('modalDateTitle').innerText = `${type} - ${dayNum} ${monthName}`;
       
-      let listHtml = `<div style="font-size:0.85rem; color:#ff9800; margin-bottom:10px; font-weight:bold;">Tap any exercise for demo animation:</div>`;
+      let listHtml = `<div style="font-size:0.85rem; color:#ff9800; margin-bottom:10px; font-weight:bold;">Tap exercise for animated demo:</div>`;
       
       if (type === "REST") {
         listHtml += `<div class="exercise-row"><div><div class="ex-name">Rest & Recovery</div><div class="ex-sets">Hydrate, Stretch & Sleep 💤</div></div></div>`;
@@ -428,7 +419,15 @@
     function openExerciseDemo(exName) {
       const info = exerciseDatabase[exName];
       document.getElementById('animTitle').innerText = exName;
-      document.getElementById('animGif').src = info.gif;
+      
+      const gifEl = document.getElementById('animGif');
+      if (info.gif) {
+        gifEl.src = info.gif;
+        gifEl.style.display = 'block';
+      } else {
+        gifEl.style.display = 'none';
+      }
+
       document.getElementById('animDesc').innerText = info.desc;
       document.getElementById('animModal').style.display = 'flex';
     }
