@@ -15,12 +15,11 @@
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
         
-        /* Circular Timer Styling */
         .circle-bg { fill: none; stroke: #1e293b; stroke-width: 8; }
         .circle-progress { fill: none; stroke: #06b6d4; stroke-width: 8; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 1s linear; }
     </style>
 </head>
-<body class="min-h-screen pb-24 text-slate-100 flex flex-col items-center">
+<body class="min-h-screen pb-28 text-slate-100 flex flex-col items-center">
 
     <!-- Top Header -->
     <header class="w-full max-w-md p-4 flex items-center justify-between glass-panel sticky top-0 z-40 border-b border-cyan-950">
@@ -47,7 +46,7 @@
     <main class="w-full max-w-md p-4 space-y-6">
 
         <!-- 1. ACTIVITY CALENDAR (At the Top) -->
-        <section class="glass-panel rounded-2xl p-4 shadow-xl border border-slate-800">
+        <section id="calendar-section" class="glass-panel rounded-2xl p-4 shadow-xl border border-slate-800">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center space-x-2">
                     <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -161,8 +160,50 @@
         </div>
     </div>
 
-    <!-- FLOATING REST TIMER WIDGET (Default 60s) -->
-    <div id="rest-timer-bar" class="fixed bottom-16 left-4 right-4 max-w-sm mx-auto glass-panel p-3 rounded-2xl border border-cyan-500/30 flex items-center justify-between shadow-2xl transition-all duration-300 translate-y-24 opacity-0 z-50">
+    <!-- STATS MODAL POPUP (Rank System & Next Goal) -->
+    <div id="stats-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="glass-panel w-full max-w-sm rounded-2xl p-6 border border-cyan-500/40 space-y-4 shadow-2xl relative text-center">
+            <div class="flex items-center justify-between">
+                <h3 class="font-extrabold text-base text-cyan-300">Winter Arc Elite Stats</h3>
+                <button onclick="closeStatsModal()" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-cyan-400 font-bold">✕</button>
+            </div>
+            <div class="py-2 space-y-3">
+                <div class="bg-gradient-to-r from-slate-900 to-cyan-950/40 p-4 rounded-xl border border-cyan-500/30">
+                    <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Current Elite Rank</p>
+                    <p id="stats-rank" class="text-xl font-black text-cyan-300 mt-1">⚡ Rookie Arc</p>
+                </div>
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                    <p class="text-xs text-slate-400 uppercase font-bold">Current Streak</p>
+                    <p id="stats-streak" class="text-2xl font-black text-amber-400 mt-1">0 Days 🔥</p>
+                </div>
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                    <p class="text-xs text-slate-400 uppercase font-bold">Next Milestone Goal</p>
+                    <p id="stats-next-goal" class="text-xs font-bold text-slate-300 mt-1">Reach 7 Days Streak to unlock Crusher Rank!</p>
+                </div>
+            </div>
+            <button onclick="closeStatsModal()" class="w-full py-3 rounded-xl font-bold text-xs bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition">Close</button>
+        </div>
+    </div>
+
+    <!-- GALLERY MODAL POPUP (Weekly Photo Uploads) -->
+    <div id="gallery-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="glass-panel w-full max-w-md rounded-2xl p-6 border border-cyan-500/40 space-y-4 shadow-2xl relative max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between">
+                <h3 class="font-extrabold text-base text-cyan-300">Transformation Gallery</h3>
+                <button onclick="closeGalleryModal()" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-cyan-400 font-bold">✕</button>
+            </div>
+            <p class="text-xs text-slate-400">Your weekly physique check photos uploaded on Sundays.</p>
+            
+            <div id="gallery-grid" class="grid grid-cols-2 gap-3 overflow-y-auto p-1 flex-1">
+                <!-- Dynamically populated uploaded photos -->
+            </div>
+
+            <button onclick="closeGalleryModal()" class="w-full py-3 rounded-xl font-bold text-xs bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition">Close</button>
+        </div>
+    </div>
+
+    <!-- FLOATING REST TIMER WIDGET -->
+    <div id="rest-timer-bar" class="fixed bottom-20 left-4 right-4 max-w-sm mx-auto glass-panel p-3 rounded-2xl border border-cyan-500/30 flex items-center justify-between shadow-2xl transition-all duration-300 translate-y-24 opacity-0 z-50">
         <div class="flex items-center space-x-3">
             <div class="w-9 h-9 rounded-xl bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold text-sm">⏱️</div>
             <div>
@@ -177,24 +218,23 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
+    <!-- Bottom Navigation Bar (Workout, Gallery, Stats) -->
     <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto glass-panel border-t border-slate-800 py-2.5 px-6 flex justify-around items-center z-40 bg-slate-950/95">
-        <a href="#" class="flex flex-col items-center text-cyan-400">
+        <button onclick="scrollToSection('split-tabs')" class="flex flex-col items-center text-cyan-400 focus:outline-none">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span class="text-[10px] font-bold mt-1">Workout</span>
-        </a>
-        <a href="#calendar-subtitle" class="flex flex-col items-center text-slate-500 hover:text-slate-300 transition">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-            <span class="text-[10px] font-medium mt-1">Calendar</span>
-        </a>
-        <a href="#" onclick="alert('Streak & Stats active!')" class="flex flex-col items-center text-slate-500 hover:text-slate-300 transition">
+        </button>
+        <button onclick="openGalleryModal()" class="flex flex-col items-center text-slate-400 hover:text-cyan-400 transition focus:outline-none">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            <span class="text-[10px] font-medium mt-1">Gallery</span>
+        </button>
+        <button onclick="openStatsModal()" class="flex flex-col items-center text-slate-400 hover:text-cyan-400 transition focus:outline-none">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
             <span class="text-[10px] font-medium mt-1">Stats</span>
-        </a>
+        </button>
     </nav>
 
     <script>
-        // ROUTINE DATA WITH EXACT REPO FILENAMES
         const routines = {
             push1: {
                 title: "Push 1: Chest, Shoulders & Triceps",
@@ -275,6 +315,7 @@
         let currentSplit = 'push1';
         let workoutData = JSON.parse(localStorage.getItem('winter_arc_logs')) || {};
         let streakCount = parseInt(localStorage.getItem('winter_arc_streak')) || 0;
+        let galleryPhotos = JSON.parse(localStorage.getItem('winter_arc_gallery')) || [];
 
         let activeDate = new Date();
         let selectedDateKey = formatDateKey(activeDate);
@@ -284,6 +325,10 @@
         }
 
         document.getElementById('streak-count').innerText = `${streakCount} Days`;
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
 
         function switchSplit(splitKey) {
             currentSplit = splitKey;
@@ -303,6 +348,27 @@
             container.innerHTML = '';
             const routine = routines[currentSplit];
             const savedLog = workoutData[selectedDateKey]?.[currentSplit] || {};
+
+            // Check if today is Sunday (Day 0)
+            const isSunday = new Date(selectedDateKey).getDay() === 0;
+
+            if (isSunday) {
+                container.innerHTML += `
+                    <div class="glass-panel p-5 rounded-2xl border border-amber-500/30 bg-amber-950/10 space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold text-lg border border-amber-500/30">📸</div>
+                            <div>
+                                <h3 class="font-black text-sm text-amber-300 uppercase tracking-wide">Sunday Weekly Physique Task</h3>
+                                <p class="text-[11px] text-slate-400">Capture & upload your weekly progress photo</p>
+                            </div>
+                        </div>
+                        <label class="block w-full py-3 rounded-xl border border-dashed border-amber-500/50 bg-slate-900/80 text-center cursor-pointer hover:bg-slate-900 transition">
+                            <span class="text-xs font-extrabold text-amber-300">📷 Open Camera & Upload Photo</span>
+                            <input type="file" accept="image/*" capture="environment" onchange="handleWeeklyPhotoUpload(event)" class="hidden">
+                        </label>
+                    </div>
+                `;
+            }
 
             routine.exercises.forEach((ex, exIndex) => {
                 let setsHtml = '';
@@ -352,7 +418,22 @@
             });
         }
 
-        // MODAL LOGIC
+        // WEEKLY PHOTO UPLOAD HANDLER
+        function handleWeeklyPhotoUpload(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const photoObj = { date: selectedDateKey, src: e.target.result };
+                    galleryPhotos.push(photoObj);
+                    localStorage.setItem('winter_arc_gallery', JSON.stringify(galleryPhotos));
+                    alert("Sunday weekly progress photo uploaded successfully to Gallery! 📸");
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // MODALS
         function openDemoModal(name, imgPath, tipText) {
             document.getElementById('modal-title').innerText = name;
             document.getElementById('modal-img').src = imgPath;
@@ -366,7 +447,61 @@
             document.getElementById('demo-modal').classList.add('hidden');
         }
 
-        // REST TIMER ENGINE (Default 60 Seconds)
+        function openStatsModal() {
+            // Rank calculation based on streak
+            let rankName = "⚡ Rookie Arc";
+            let nextGoalText = "Reach 7 Days streak to unlock Crusher Rank!";
+            if(streakCount >= 30) {
+                rankName = "👑 Winter Arc Legend";
+                nextGoalText = "You have reached the ultimate peak!";
+            } else if(streakCount >= 14) {
+                rankName = "🔥 Beast Mode";
+                nextGoalText = "Reach 30 Days streak to unlock Legend Rank!";
+            } else if(streakCount >= 7) {
+                rankName = "🛡️ Arc Crusher";
+                nextGoalText = "Reach 14 Days streak to unlock Beast Mode!";
+            }
+
+            document.getElementById('stats-rank').innerText = rankName;
+            document.getElementById('stats-streak').innerText = `${streakCount} Days 🔥`;
+            document.getElementById('stats-next-goal').innerText = nextGoalText;
+
+            document.getElementById('stats-modal').classList.remove('hidden');
+            document.getElementById('stats-modal').classList.add('flex');
+        }
+
+        function closeStatsModal() {
+            document.getElementById('stats-modal').classList.remove('flex');
+            document.getElementById('stats-modal').classList.add('hidden');
+        }
+
+        function openGalleryModal() {
+            const grid = document.getElementById('gallery-grid');
+            grid.innerHTML = '';
+
+            if(galleryPhotos.length === 0) {
+                grid.innerHTML = `<div class="col-span-2 text-center py-8 text-slate-500 text-xs">No physique photos uploaded yet.<br>Complete your Sunday task to add photos!</div>`;
+            } else {
+                galleryPhotos.forEach((item) => {
+                    grid.innerHTML += `
+                        <div class="glass-panel p-2 rounded-xl border border-slate-800 space-y-1 text-center">
+                            <img src="${item.src}" class="w-full h-36 object-cover rounded-lg border border-slate-800" alt="Progress">
+                            <span class="text-[10px] text-cyan-400 font-bold">${item.date}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('gallery-modal').classList.remove('hidden');
+            document.getElementById('gallery-modal').classList.add('flex');
+        }
+
+        function closeGalleryModal() {
+            document.getElementById('gallery-modal').classList.remove('flex');
+            document.getElementById('gallery-modal').classList.add('hidden');
+        }
+
+        // REST TIMER ENGINE
         let restTimerInterval = null;
         let restTimeLeftSeconds = 60;
 
@@ -419,7 +554,7 @@
             if(!isCurrentlyDone) {
                 btn.className = "w-9 h-9 rounded-xl border flex items-center justify-center font-bold text-sm transition bg-cyan-500 text-slate-950 border-cyan-400";
                 workoutData[selectedDateKey][currentSplit][setKey] = { weight: weightInput.value, done: true };
-                startRestTimer(60); // Activates 60s Rest Timer
+                startRestTimer(60);
             } else {
                 btn.className = "w-9 h-9 rounded-xl border flex items-center justify-center font-bold text-sm transition bg-slate-900/60 text-slate-400 border-slate-800";
                 workoutData[selectedDateKey][currentSplit][setKey] = { weight: weightInput.value, done: false };
@@ -451,17 +586,16 @@
 
         // CIRCULAR CYCLING STOPWATCH ENGINE
         let cyclingInterval = null;
-        let cyclingTotalSeconds = 600; // 10 minutes
+        let cyclingTotalSeconds = 600;
         let cyclingRemainingSeconds = 600;
         let isCyclingRunning = false;
-        const totalCircumference = 263.89; // 2 * PI * 42
+        const totalCircumference = 263.89;
 
         function updateCyclingDisplay() {
             let m = Math.floor(cyclingRemainingSeconds / 60);
             let s = cyclingRemainingSeconds % 60;
             document.getElementById('cycling-timer-display').innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
             
-            // Calculate Circular Ring Offset
             const progressRatio = cyclingRemainingSeconds / cyclingTotalSeconds;
             const strokeDashoffset = totalCircumference * (1 - progressRatio);
             document.getElementById('cycling-progress-ring').style.strokeDashoffset = strokeDashoffset;
@@ -551,6 +685,7 @@
             if(confirm("Are you sure you want to reset all workout logs and streak history?")) {
                 localStorage.clear();
                 workoutData = {};
+                galleryPhotos = [];
                 streakCount = 0;
                 document.getElementById('streak-count').innerText = "0 Days";
                 renderCalendar();
@@ -558,7 +693,6 @@
             }
         }
 
-        // Initial setup
         renderExercises();
         renderCalendar();
         updateCyclingDisplay();
