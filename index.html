@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winter Arc Workout Tracker (Oct-Dec 2026)</title>
+    <title>Winter Arc Workout & Progress Tracker</title>
     <style>
         :root {
             --bg-color: #0d1117;
@@ -36,7 +36,7 @@
         }
 
         header h1 {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             color: var(--text-primary);
             margin-bottom: 4px;
         }
@@ -46,13 +46,58 @@
             color: var(--text-secondary);
         }
 
-        /* Category Tabs */
+        /* Calendar Section */
+        .calendar-section {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            text-align: center;
+        }
+
+        .day-name {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .day-cell {
+            padding: 8px 0;
+            background-color: rgba(240, 246, 252, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .day-cell.active {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            font-weight: bold;
+        }
+
+        /* Tabs */
         .tabs {
             display: flex;
             gap: 8px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            padding-bottom: 4px;
+            margin-bottom: 16px;
         }
 
         .tab-btn {
@@ -65,7 +110,6 @@
             font-size: 0.9rem;
             border-radius: 8px;
             cursor: pointer;
-            white-space: nowrap;
             transition: all 0.2s ease;
         }
 
@@ -75,7 +119,38 @@
             border-color: var(--accent);
         }
 
-        /* Exercise Cards Container */
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 16px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .progress-title {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar-bg {
+            background-color: var(--border);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background-color: var(--accent);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Exercise Cards */
         .exercise-list {
             display: flex;
             flex-direction: column;
@@ -111,7 +186,13 @@
             padding: 14px 16px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 10px;
+        }
+
+        .exercise-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .exercise-title {
@@ -119,9 +200,16 @@
             font-weight: 700;
         }
 
+        .exercise-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
         .exercise-meta {
             display: flex;
-            justify-content: space-between;
+            gap: 8px;
             font-size: 0.85rem;
             color: var(--text-secondary);
         }
@@ -130,14 +218,6 @@
             background-color: rgba(240, 246, 252, 0.08);
             padding: 4px 8px;
             border-radius: 4px;
-        }
-
-        /* Responsive adjustments */
-        @media (min-width: 768px) {
-            body {
-                max-width: 700px;
-                padding: 24px;
-            }
         }
     </style>
 </head>
@@ -148,20 +228,38 @@
         <p>October – December 2026 PPL Routine</p>
     </header>
 
+    <!-- Calendar Streak Section -->
+    <div class="calendar-section">
+        <div class="calendar-header">
+            <span>📅 October 2026 Tracker</span>
+        </div>
+        <div class="calendar-grid" id="calendar-grid">
+            <!-- Dynamic Calendar Days -->
+        </div>
+    </div>
+
+    <!-- Workout Completion Progress -->
+    <div class="progress-container">
+        <div class="progress-title">
+            <span>Daily Workout Progress</span>
+            <span id="progress-text">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
+    </div>
+
     <!-- Navigation Tabs -->
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('push')">Push</button>
-        <button class="tab-btn" onclick="switchTab('pull')">Pull</button>
-        <button class="tab-btn" onclick="switchTab('legsAndCore')">Legs & Core</button>
+        <button class="tab-btn active" onclick="switchTab('push', event)">Push</button>
+        <button class="tab-btn" onclick="switchTab('pull', event)">Pull</button>
+        <button class="tab-btn" onclick="switchTab('legsAndCore', event)">Legs & Core</button>
     </div>
 
     <!-- Content Area -->
-    <div id="exercise-container" class="exercise-list">
-        <!-- Dynamic Content loads here -->
-    </div>
+    <div id="exercise-container" class="exercise-list"></div>
 
     <script>
-        // Database matching your repository structure and clean filenames
         const workoutData = {
             push: [
                 { id: "push_1", name: "Barbell Bench Press", image: "Workout/Bench press.jpg", sets: "3-4", reps: "8-12" },
@@ -187,31 +285,68 @@
             ]
         };
 
-        function switchTab(category) {
-            // Update active tab button style
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
+        let currentCategory = 'push';
+        let completedExercises = JSON.parse(localStorage.getItem('completedExercises')) || {};
+        let completedDays = JSON.parse(localStorage.getItem('completedDays')) || {};
 
-            renderExercises(category);
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+            for (let i = 1; i <= 31; i++) {
+                const day = document.createElement('div');
+                day.className = `day-cell ${completedDays[i] ? 'active' : ''}`;
+                day.innerText = i;
+                day.onclick = () => toggleDay(i);
+                grid.appendChild(day);
+            }
         }
 
-        function renderExercises(category) {
-            const container = document.getElementById('exercise-container');
-            const items = workoutData[category];
+        function toggleDay(day) {
+            completedDays[day] = !completedDays[day];
+            localStorage.setItem('completedDays', JSON.stringify(completedDays));
+            renderCalendar();
+        }
 
+        function switchTab(category, evt) {
+            currentCategory = category;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            evt.target.classList.add('active');
+            renderExercises();
+        }
+
+        function toggleExercise(id) {
+            completedExercises[id] = !completedExercises[id];
+            localStorage.setItem('completedExercises', JSON.stringify(completedExercises));
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const currentList = workoutData[currentCategory];
+            const completedCount = currentList.filter(item => completedExercises[item.id]).length;
+            const percentage = Math.round((completedCount / currentList.length) * 100) || 0;
+            
+            document.getElementById('progress-fill').style.width = `${percentage}%`;
+            document.getElementById('progress-text').innerText = `${percentage}%`;
+        }
+
+        function renderExercises() {
+            const container = document.getElementById('exercise-container');
+            const items = workoutData[currentCategory];
             container.innerHTML = '';
 
             items.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'exercise-card';
+                const isChecked = completedExercises[item.id] ? 'checked' : '';
                 card.innerHTML = `
                     <div class="image-container">
                         <img src="${item.image}" alt="${item.name}" loading="lazy">
                     </div>
                     <div class="exercise-info">
-                        <div class="exercise-title">${item.name}</div>
+                        <div class="exercise-header-row">
+                            <span class="exercise-title">${item.name}</span>
+                            <input type="checkbox" class="exercise-checkbox" ${isChecked} onchange="toggleExercise('${item.id}')">
+                        </div>
                         <div class="exercise-meta">
                             <span class="meta-badge">Sets: ${item.sets}</span>
                             <span class="meta-badge">Reps: ${item.reps}</span>
@@ -220,10 +355,12 @@
                 `;
                 container.appendChild(card);
             });
+            updateProgress();
         }
 
-        // Initial Load
-        renderExercises('push');
+        // Init
+        renderCalendar();
+        renderExercises();
     </script>
 </body>
 </html>
