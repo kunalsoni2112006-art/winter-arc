@@ -9,7 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #030712; color: #f3f4f6; }
         .glow-cyan { box-shadow: 0 0 25px rgba(6, 182, 212, 0.25); }
-        .glass-panel { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(56, 189, 248, 0.15); }
+        .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(56, 189, 248, 0.15); }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #030712; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
@@ -19,7 +19,7 @@
 <body class="min-h-screen pb-24 text-slate-100 flex flex-col items-center">
 
     <!-- Top Header -->
-    <header class="w-full max-w-md p-4 flex items-center justify-between glass-panel sticky top-0 z-50 border-b border-cyan-950">
+    <header class="w-full max-w-md p-4 flex items-center justify-between glass-panel sticky top-0 z-40 border-b border-cyan-950">
         <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center glow-cyan">
                 <svg class="w-6 h-6 text-slate-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
@@ -42,7 +42,7 @@
 
     <main class="w-full max-w-md p-4 space-y-6">
 
-        <!-- 1. ACTIVITY CALENDAR (Moved to Top) -->
+        <!-- 1. ACTIVITY CALENDAR (At the Top) -->
         <section class="glass-panel rounded-2xl p-4 shadow-xl border border-slate-800">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center space-x-2">
@@ -100,7 +100,7 @@
             <p id="routine-desc" class="text-xs text-slate-400 mt-1">Heavy compound pressing focus for upper body growth.</p>
         </div>
 
-        <!-- EXERCISE LIST CONTAINER -->
+        <!-- EXERCISE LIST CONTAINER (Cleaned up: No thumbnail on main screen) -->
         <div id="exercise-container" class="space-y-4">
             <!-- Dynamically populated exercise items -->
         </div>
@@ -110,31 +110,49 @@
             ✓ Save & Log Workout
         </button>
 
-        <!-- 3. POST-WORKOUT 10 MINUTE CYCLING CARDIO TIMER (Bottom of Workouts) -->
-        <section class="glass-panel rounded-2xl p-5 border border-cyan-500/20 space-y-4">
+        <!-- 3. POST-WORKOUT 10 MINUTE CYCLING CARDIO TIMER (Cool Styled Bottom Section) -->
+        <section class="glass-panel rounded-2xl p-5 border border-cyan-500/30 space-y-4 bg-gradient-to-b from-slate-900/90 to-slate-950 shadow-xl">
             <div class="flex items-center justify-between">
-                <div>
-                    <h3 class="font-black text-sm text-cyan-300 uppercase tracking-wide">Post-Workout 10 Min Cycling</h3>
-                    <p class="text-[11px] text-slate-400">Complete steady-state cardio session</p>
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold text-lg border border-cyan-500/30">🚴</div>
+                    <div>
+                        <h3 class="font-black text-sm text-cyan-300 uppercase tracking-wide">Post-Workout 10 Min Cycling</h3>
+                        <p class="text-[11px] text-slate-400">Steady-state recovery cardio</p>
+                    </div>
                 </div>
-                <div class="bg-cyan-950/60 px-2.5 py-1 rounded-lg border border-cyan-500/30">
-                    <span id="cycling-status" class="text-[10px] font-bold text-cyan-400 uppercase">Ready</span>
+                <div class="bg-cyan-950/80 px-3 py-1.5 rounded-full border border-cyan-500/40">
+                    <span id="cycling-status" class="text-[10px] font-extrabold text-cyan-400 uppercase tracking-wider">Ready</span>
                 </div>
             </div>
 
-            <div class="flex flex-col items-center justify-center py-3">
-                <div class="relative flex items-center justify-center">
+            <div class="flex flex-col items-center justify-center py-2">
+                <div class="bg-slate-950/80 px-6 py-3 rounded-2xl border border-slate-800 shadow-inner w-full text-center">
                     <span id="cycling-timer-display" class="text-4xl font-black text-cyan-200 tracking-wider">10:00</span>
                 </div>
-                <div class="flex space-x-3 mt-4 w-full">
-                    <button onclick="startCyclingTimer()" id="cycling-start-btn" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition">Start Timer</button>
-                    <button onclick="pauseCyclingTimer()" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Pause</button>
-                    <button onclick="resetCyclingTimer()" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-slate-900 text-slate-400 hover:bg-slate-800 transition">Reset</button>
+                <div class="flex space-x-2.5 mt-4 w-full">
+                    <button onclick="startCyclingTimer()" id="cycling-start-btn" class="flex-1 py-3 rounded-xl font-extrabold text-xs bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:opacity-90 transition shadow-md">Start Timer</button>
+                    <button onclick="pauseCyclingTimer()" class="flex-1 py-3 rounded-xl font-extrabold text-xs bg-slate-800 text-slate-200 hover:bg-slate-700 transition border border-slate-700">Pause</button>
+                    <button onclick="resetCyclingTimer()" class="px-5 py-3 rounded-xl font-extrabold text-xs bg-slate-900 text-slate-400 hover:bg-slate-800 transition border border-slate-800">Reset</button>
                 </div>
             </div>
         </section>
 
     </main>
+
+    <!-- EXERCISE DEMO MODAL POPUP -->
+    <div id="demo-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="glass-panel w-full max-w-sm rounded-2xl p-5 border border-cyan-500/40 space-y-4 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+            <div class="flex items-center justify-between">
+                <h3 id="modal-title" class="font-extrabold text-base text-cyan-300">Exercise Demo</h3>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-cyan-400 font-bold">✕</button>
+            </div>
+            <div class="flex justify-center bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                <img id="modal-img" src="" class="max-h-64 object-contain rounded-lg" alt="Exercise Demo">
+            </div>
+            <p id="modal-desc" class="text-xs text-slate-300 leading-relaxed text-center">Perform with controlled eccentric movement and strict posture.</p>
+            <button onclick="closeModal()" class="w-full py-2.5 rounded-xl font-bold text-xs bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition">Got It</button>
+        </div>
+    </div>
 
     <!-- Floating Rest Timer Widget -->
     <div id="rest-timer-bar" class="fixed bottom-16 left-4 right-4 max-w-sm mx-auto glass-panel p-3 rounded-2xl border border-cyan-500/30 flex items-center justify-between shadow-2xl transition-all duration-300 translate-y-24 opacity-0 z-50">
@@ -146,14 +164,12 @@
             </div>
         </div>
         <div class="flex space-x-2">
-            <button onclick="adjustRestTime(-15)" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg font-bold text-slate-300">-15s</button>
-            <button onclick="adjustRestTime(15)" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg font-bold text-slate-300">+15s</button>
             <button onclick="stopRestTimer()" class="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-xs rounded-lg font-bold text-red-400">Stop</button>
         </div>
     </div>
 
     <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto glass-panel border-t border-slate-800 py-2.5 px-6 flex justify-around items-center z-40 bg-slate-950/90">
+    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto glass-panel border-t border-slate-800 py-2.5 px-6 flex justify-around items-center z-40 bg-slate-950/95">
         <a href="#" class="flex flex-col items-center text-cyan-400">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span class="text-[10px] font-bold mt-1">Workout</span>
@@ -169,80 +185,80 @@
     </nav>
 
     <script>
-        // ROUTINE DATA DEFINITION WITH EXACT FILENAMES MAPPED
+        // ROUTINE DATA WITH EXACT REPO FILENAMES MAPPED
         const routines = {
             push1: {
                 title: "Push 1: Chest, Shoulders & Triceps",
                 desc: "Heavy compound pressing focus with overhead pressing strength.",
                 exercises: [
-                    { name: "Barbell Bench Press", sets: 4, reps: "6-8", type: "compound", img: "Workout/Bench press.jpg", rest: 90 },
-                    { name: "Incline Dumbbell Press", sets: 3, reps: "8-10", type: "compound", img: "Workout/Incline press.jpg", rest: 75 },
-                    { name: "Overhead Shoulder Press", sets: 3, reps: "8-10", type: "compound", img: "Workout/Shoulder press.jpg", rest: 75 },
-                    { name: "Lateral Raises", sets: 4, reps: "12-15", type: "isolation", img: "Workout/Lateral raise.jpg", rest: 60 },
-                    { name: "Tricep Pushdowns", sets: 3, reps: "10-12", type: "isolation", img: "Workout/Tricep pushdown.jpg", rest: 60 }
+                    { name: "Barbell Bench Press", sets: 4, reps: "6-8", type: "compound", img: "Workout/Bench press.jpg", tip: "Keep shoulder blades retracted and feet firmly planted on the floor." },
+                    { name: "Incline Dumbbell Press", sets: 3, reps: "8-10", type: "compound", img: "Workout/Incline press.jpg", tip: "Set bench to 30-45 degrees to target upper pectoral fibers." },
+                    { name: "Overhead Shoulder Press", sets: 3, reps: "8-10", type: "compound", img: "Workout/Shoulder press.jpg", tip: "Brace core tightly to prevent lower back arching." },
+                    { name: "Lateral Raises", sets: 4, reps: "12-15", type: "isolation", img: "Workout/Lateral raise.jpg", tip: "Lead slightly with elbows and control the negative descent." },
+                    { name: "Tricep Pushdowns", sets: 3, reps: "10-12", type: "isolation", img: "Workout/Tricep pushdown.jpg", tip: "Keep elbows pinned to your sides throughout the movement." }
                 ]
             },
             pull1: {
                 title: "Pull 1: Back Width & Biceps",
                 desc: "Vertical pull focus targeting lats and bicep thickness.",
                 exercises: [
-                    { name: "Pull-Ups", sets: 4, reps: "8-10", type: "compound", img: "Workout/Pullups.jpg", rest: 90 },
-                    { name: "Lat Pulldown (Neutral)", sets: 3, reps: "10-12", type: "compound", img: "Workout/Lat pulldown.jpg", rest: 75 },
-                    { name: "Single-Arm Dumbbell Row", sets: 3, reps: "10-12", type: "compound", img: "Workout/Db row.jpg", rest: 75 },
-                    { name: "Face Pulls", sets: 4, reps: "15", type: "isolation", img: "Workout/Face pull.jpg", rest: 60 },
-                    { name: "Incline Dumbbell Curls", sets: 3, reps: "12", type: "isolation", img: "Workout/Db curl.jpg", rest: 60 }
+                    { name: "Pull-Ups", sets: 4, reps: "8-10", type: "compound", img: "Workout/Pullups.jpg", tip: "Pull chest up to the bar and squeeze lats at the top." },
+                    { name: "Lat Pulldown (Neutral)", sets: 3, reps: "10-12", type: "compound", img: "Workout/Lat pulldown.jpg", tip: "Drive elbows down and back, avoid using momentum." },
+                    { name: "Single-Arm Dumbbell Row", sets: 3, reps: "10-12", type: "compound", img: "Workout/Db row.jpg", tip: "Pull toward your hip pocket for maximum lat recruitment." },
+                    { name: "Face Pulls", sets: 4, reps: "15", type: "isolation", img: "Workout/Face pull.jpg", tip: "Pull toward your ears with high elbows to target rear delts." },
+                    { name: "Incline Dumbbell Curls", sets: 3, reps: "12", type: "isolation", img: "Workout/Db curl.jpg", tip: "Let arms hang back fully to get a deep bicep stretch." }
                 ]
             },
             legs1: {
                 title: "Legs 1 (Quads & Upper Abs)",
                 desc: "Heavy quad loading paired with deep core conditioning.",
                 exercises: [
-                    { name: "Barbell Squat", sets: 4, reps: "6-8", type: "compound", img: "Workout/Squat.jpg", rest: 120 },
-                    { name: "Leg Press", sets: 3, reps: "10-12", type: "compound", img: "Workout/Leg press.gif", rest: 90 },
-                    { name: "Bulgarian Split Squat", sets: 3, reps: "10/leg", type: "compound", img: "Workout/Split squat.jpg", rest: 90 },
-                    { name: "Cable Crunches", sets: 3, reps: "15", type: "core", img: "Workout/Cable crunches.jpg", rest: 60 },
-                    { name: "Plank", sets: 3, reps: "60s", type: "core", img: "Workout/plank.gif", rest: 45 }
+                    { name: "Barbell Squat", sets: 4, reps: "6-8", type: "compound", img: "Workout/Squat.jpg", tip: "Break at hips and knees simultaneously, keep chest up." },
+                    { name: "Leg Press", sets: 3, reps: "10-12", type: "compound", img: "Workout/Leg press.gif", tip: "Place feet mid-platform for balanced quad and glute engagement." },
+                    { name: "Bulgarian Split Squat", sets: 3, reps: "10/leg", type: "compound", img: "Workout/Split squat.jpg", tip: "Keep torso upright for quad focus or lean forward for glutes." },
+                    { name: "Cable Crunches", sets: 3, reps: "15", type: "core", img: "Workout/Cable crunches.jpg", tip: "Flex spine downward using abs rather than pulling with arms." },
+                    { name: "Plank", sets: 3, reps: "60s", type: "core", img: "Workout/plank.gif", tip: "Squeeze glutes and brace core as if taking a punch." }
                 ]
             },
             push2: {
                 title: "Push 2: Chest & Shoulder Hypertrophy",
                 desc: "Volume-focused chest press with lateral delt emphasis.",
                 exercises: [
-                    { name: "Incline Barbell Press", sets: 4, reps: "8-10", type: "compound", img: "Workout/Incline bench.jpg", rest: 90 },
-                    { name: "Dumbbell Bench Press", sets: 3, reps: "10-12", type: "compound", img: "Workout/Db bench press.jpg", rest: 75 },
-                    { name: "Dumbbell Shoulder Press", sets: 3, reps: "10-12", type: "compound", img: "Workout/Db shoulder press.jpg", rest: 75 },
-                    { name: "Cable Lateral Raises", sets: 4, reps: "15", type: "isolation", img: "Workout/Cable lateral raise.jpg", rest: 60 },
-                    { name: "Overhead Tricep Extension", sets: 3, reps: "12", type: "isolation", img: "Workout/Tricep extension.jpg", rest: 60 }
+                    { name: "Incline Barbell Press", sets: 4, reps: "8-10", type: "compound", img: "Workout/Incline bench.jpg", tip: "Press bar in a slight arc over your upper chest." },
+                    { name: "Dumbbell Bench Press", sets: 3, reps: "10-12", type: "compound", img: "Workout/Db bench press.jpg", tip: "Allow a natural stretch at the bottom without losing tension." },
+                    { name: "Dumbbell Shoulder Press", sets: 3, reps: "10-12", type: "compound", img: "Workout/Db shoulder press.jpg", tip: "Press dumbbells slightly inward at the top." },
+                    { name: "Cable Lateral Raises", sets: 4, reps: "15", type: "isolation", img: "Workout/Cable lateral raise.jpg", tip: "Constant tension throughout the entire range of motion." },
+                    { name: "Overhead Tricep Extension", sets: 3, reps: "12", type: "isolation", img: "Workout/Tricep extension.jpg", tip: "Keep upper arms stationary next to your ears." }
                 ]
             },
             pull2: {
                 title: "Pull 2 (Back Thickness Focus)",
                 desc: "Mid back, lats, rear delts, biceps.",
                 exercises: [
-                    { name: "Seated Cable Rows", sets: 4, reps: "10-12", type: "compound", img: "Workout/Seated row.jpg", rest: 75 },
-                    { name: "Lat Pulldown (Neutral)", sets: 3, reps: "12", type: "compound", img: "Workout/Lat pulldown.jpg", rest: 75 },
-                    { name: "Rear Delt Flyes", sets: 4, reps: "15", type: "isolation", img: "Workout/Rear delt fly.jpg", rest: 60 },
-                    { name: "Preacher Bicep Curl", sets: 3, reps: "12", type: "isolation", img: "Workout/Preacher curl.jpg", rest: 60 },
-                    { name: "Hammer Curls", sets: 3, reps: "12", type: "isolation", img: "Workout/Hammer curl.jpg", rest: 60 }
+                    { name: "Seated Cable Rows", sets: 4, reps: "10-12", type: "compound", img: "Workout/Seated row.jpg", tip: "Keep a slight arch in your lower back, pull to lower abdomen." },
+                    { name: "Lat Pulldown (Neutral)", sets: 3, reps: "12", type: "compound", img: "Workout/Lat pulldown.jpg", tip: "Control the weight on the way up." },
+                    { name: "Rear Delt Flyes", sets: 4, reps: "15", type: "isolation", img: "Workout/Rear delt fly.jpg", tip: "Focus on squeezing shoulder blades together." },
+                    { name: "Preacher Bicep Curl", sets: 3, reps: "12", type: "isolation", img: "Workout/Preacher curl.jpg", tip: "Keep upper arms flat against the pad." },
+                    { name: "Hammer Curls", sets: 3, reps: "12", type: "isolation", img: "Workout/Hammer curl.jpg", tip: "Neutral grip targets brachialis and forearms." }
                 ]
             },
             legs2: {
                 title: "Legs 2 (Glutes, Hams & Obliques)",
                 desc: "Posterior chain focus with rotational core strength.",
                 exercises: [
-                    { name: "Romanian Deadlift", sets: 4, reps: "8-10", type: "compound", img: "Workout/Romanian dead lift.jpg", rest: 90 },
-                    { name: "Leg Curl", sets: 3, reps: "12", type: "isolation", img: "Workout/Leg curl.jpg", rest: 60 },
-                    { name: "Standing Calf Raises", sets: 4, reps: "15", type: "isolation", img: "Workout/Calf raises.jpg", rest: 60 },
-                    { name: "Hanging Leg Raises", sets: 3, reps: "12", type: "core", img: "Workout/Leg raises.jpg", rest: 60 },
-                    { name: "Russian Twists", sets: 3, reps: "20", type: "core", img: "Workout/Russian twist.jpg", rest: 45 }
+                    { name: "Romanian Deadlift", sets: 4, reps: "8-10", type: "compound", img: "Workout/Romanian dead lift.jpg", tip: "Hinge at hips pushing glutes backward with soft knees." },
+                    { name: "Leg Curl", sets: 3, reps: "12", type: "isolation", img: "Workout/Leg curl.jpg", tip: "Keep hips pressed firmly against the pad." },
+                    { name: "Standing Calf Raises", sets: 4, reps: "15", type: "isolation", img: "Workout/Calf raises.jpg", tip: "Full stretch at the bottom, peak contraction at the top." },
+                    { name: "Hanging Leg Raises", sets: 3, reps: "12", type: "core", img: "Workout/Leg raises.jpg", tip: "Avoid swinging; use lower abs to raise legs." },
+                    { name: "Russian Twists", sets: 3, reps: "20", type: "core", img: "Workout/Russian twist.jpg", tip: "Rotate from your torso to engage obliques effectively." }
                 ]
             },
             rest: {
                 title: "Rest & Active Recovery",
                 desc: "Hydrate, stretch, and allow muscle protein synthesis.",
                 exercises: [
-                    { name: "Full Body Mobility Routine", sets: 1, reps: "20 mins", type: "recovery", img: "Workout/plank.gif", rest: 0 },
-                    { name: "Light Walking / Hydration", sets: 1, reps: "Active", type: "recovery", img: "Workout/Squat.jpg", rest: 0 }
+                    { name: "Full Body Mobility Routine", sets: 1, reps: "20 mins", type: "recovery", img: "Workout/plank.gif", tip: "Focus on hips, spine, and shoulder mobility." },
+                    { name: "Light Walking / Hydration", sets: 1, reps: "Active", type: "recovery", img: "Workout/Squat.jpg", tip: "Stay hydrated and maintain daily step count." }
                 ]
             }
         };
@@ -251,8 +267,7 @@
         let workoutData = JSON.parse(localStorage.getItem('winter_arc_logs')) || {};
         let streakCount = parseInt(localStorage.getItem('winter_arc_streak')) || 0;
 
-        // CALENDAR STATE
-        let activeDate = new Date(); // Oct 2026 default
+        let activeDate = new Date();
         let selectedDateKey = formatDateKey(activeDate);
 
         function formatDateKey(date) {
@@ -274,6 +289,7 @@
             renderExercises();
         }
 
+        // RENDER EXERCISES WITH CLEAN MENU & INFO BUTTON POPUP
         function renderExercises() {
             const container = document.getElementById('exercise-container');
             container.innerHTML = '';
@@ -286,7 +302,6 @@
                     const setKey = `ex_${exIndex}_set_${s}`;
                     const weightVal = savedLog[setKey]?.weight || '';
                     const isDone = savedLog[setKey]?.done ? 'bg-cyan-500 text-slate-950 border-cyan-400' : 'bg-slate-900/60 text-slate-400 border-slate-800';
-                    const checkedAttr = savedLog[setKey]?.done ? 'checked' : '';
 
                     setsHtml += `
                         <div class="flex items-center space-x-2 py-1.5 border-b border-slate-800/50 last:border-0">
@@ -305,13 +320,15 @@
 
                 container.innerHTML += `
                     <div class="glass-panel p-4 rounded-2xl border border-slate-800 space-y-3">
-                        <div class="flex items-center space-x-3">
-                            <img src="${ex.img}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'100\\' height=\\'100\\' viewBox=\\'0 0 24 24\\'><path fill=\\'%2306b6d4\\' d=\\'M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8Z\\'/></svg>'" class="w-14 h-14 rounded-xl object-cover border border-cyan-500/20 bg-slate-900" alt="${ex.name}">
-                            <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <div>
                                 <h3 class="font-bold text-sm text-cyan-100">${ex.name}</h3>
                                 <p class="text-[11px] text-slate-400">${ex.sets} Sets • Target ${ex.reps} Reps</p>
                             </div>
-                            <span class="text-[10px] bg-slate-900 px-2 py-1 rounded-lg text-cyan-400 font-bold border border-slate-800">⏱ ${ex.rest}s</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-[10px] bg-slate-900 px-2.5 py-1 rounded-lg text-cyan-400 font-bold border border-slate-800">⏱ ${ex.rest}s</span>
+                                <button onclick="openDemoModal('${ex.name}', '${ex.img}', '${ex.tip}')" class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 hover:bg-cyan-500 hover:text-slate-950 flex items-center justify-center font-bold text-xs transition" title="View Exercise Guide">ℹ️</button>
+                            </div>
                         </div>
                         <div class="pt-1">
                             <div class="flex text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 px-1">
@@ -325,6 +342,20 @@
                     </div>
                 `;
             });
+        }
+
+        // MODAL LOGIC
+        function openDemoModal(name, imgPath, tipText) {
+            document.getElementById('modal-title').innerText = name;
+            document.getElementById('modal-img').src = imgPath;
+            document.getElementById('modal-desc').innerText = tipText;
+            document.getElementById('demo-modal').classList.remove('hidden');
+            document.getElementById('demo-modal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('demo-modal').classList.remove('flex');
+            document.getElementById('demo-modal').classList.add('hidden');
         }
 
         // REST TIMER ENGINE
@@ -349,10 +380,6 @@
                     timeLeft--;
                 }
             }, 1000);
-        }
-
-        function adjustRestTime(amount) {
-            // Simple helper for timer adjustments
         }
 
         function stopRestTimer() {
