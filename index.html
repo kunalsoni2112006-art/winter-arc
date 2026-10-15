@@ -36,161 +36,156 @@
                 <span class="text-amber-400 text-sm">🔥</span>
                 <span id="streak-count" class="text-xs font-bold text-cyan-300">0 Days</span>
             </div>
-            <button onclick="resetAllData()" class="p-2 text-slate-400 hover:text-cyan-400 transition" title="Reset Data">
+            <button id="reset-btn" class="p-2 text-slate-400 hover:text-cyan-400 transition" title="Reset Data">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
             </button>
         </div>
     </header>
 
-    <main class="w-full max-w-md p-4 space-y-6">
+    <main class="w-full max-w-md p-4 space-y-6 flex-1">
 
-        <!-- 1. ACTIVITY CALENDAR -->
-        <section id="calendar-section" class="glass-panel rounded-2xl p-4 shadow-xl border border-slate-800">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center space-x-2">
-                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    <h2 class="font-bold text-sm text-cyan-300 tracking-wide">Winter Arc Activity History</h2>
+        <!-- VIEW 1: WORKOUT (HOME) -->
+        <div id="view-workout" class="space-y-6">
+            <!-- Activity Calendar -->
+            <section class="glass-panel rounded-2xl p-4 shadow-xl border border-slate-800">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <h2 class="font-bold text-sm text-cyan-300 tracking-wide">Winter Arc Activity History</h2>
+                    </div>
+                    <span id="calendar-subtitle" class="text-xs text-slate-400 font-medium">Oct 2026 – Dec 2027</span>
                 </div>
-                <span id="calendar-subtitle" class="text-xs text-slate-400 font-medium">Oct 2026 – Dec 2027</span>
-            </div>
-            
-            <div class="flex items-center justify-between bg-slate-900/80 px-4 py-2.5 rounded-xl mb-3 border border-slate-800">
-                <button onclick="changeMonth(-1)" class="p-1 text-cyan-400 hover:text-cyan-300 transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
-                </button>
-                <span id="calendar-month-year" class="font-bold text-sm text-cyan-200 tracking-wider">OCTOBER 2026</span>
-                <button onclick="changeMonth(1)" class="p-1 text-cyan-400 hover:text-cyan-300 transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-                </button>
+                
+                <div class="flex items-center justify-between bg-slate-900/80 px-4 py-2.5 rounded-xl mb-3 border border-slate-800">
+                    <button id="prev-month-btn" class="p-1 text-cyan-400 hover:text-cyan-300 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    <span id="calendar-month-year" class="font-bold text-sm text-cyan-200 tracking-wider">OCTOBER 2026</span>
+                    <button id="next-month-btn" class="p-1 text-cyan-400 hover:text-cyan-300 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-7 gap-1 text-center mb-2">
+                    <span class="text-[11px] font-bold text-slate-500">S</span>
+                    <span class="text-[11px] font-bold text-slate-500">M</span>
+                    <span class="text-[11px] font-bold text-slate-500">T</span>
+                    <span class="text-[11px] font-bold text-slate-500">W</span>
+                    <span class="text-[11px] font-bold text-slate-500">T</span>
+                    <span class="text-[11px] font-bold text-slate-500">F</span>
+                    <span class="text-[11px] font-bold text-slate-500">S</span>
+                </div>
+                <div id="calendar-days" class="grid grid-cols-7 gap-1.5 text-center text-xs"></div>
+            </section>
+
+            <!-- Day Split Selector -->
+            <section id="split-tabs-section">
+                <div class="flex justify-between items-center mb-2 px-1">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Select Day Split</span>
+                    <span class="text-xs text-cyan-400 font-semibold">2x / Week Hypertrophy</span>
+                </div>
+                <div id="split-tabs" class="grid grid-cols-4 gap-2">
+                    <button data-split="push1" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-cyan-500 text-slate-950 border-cyan-400 shadow-md">Push 1</button>
+                    <button data-split="pull1" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Pull 1</button>
+                    <button data-split="legs1" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Legs 1</button>
+                    <button data-split="push2" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Push 2</button>
+                    <button data-split="pull2" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Pull 2</button>
+                    <button data-split="legs2" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Legs 2</button>
+                    <button data-split="rest" class="split-btn col-span-2 px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Rest / Recovery</button>
+                </div>
+            </section>
+
+            <!-- Routine Header -->
+            <div id="routine-header" class="glass-panel p-5 rounded-2xl border border-cyan-500/20 relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                <h2 id="routine-title" class="text-lg font-black text-cyan-300">Push 1: Chest, Shoulders & Triceps</h2>
+                <p id="routine-desc" class="text-xs text-slate-400 mt-1">Heavy compound pressing focus for upper body growth.</p>
             </div>
 
-            <div class="grid grid-cols-7 gap-1 text-center mb-2">
-                <span class="text-[11px] font-bold text-slate-500">S</span>
-                <span class="text-[11px] font-bold text-slate-500">M</span>
-                <span class="text-[11px] font-bold text-slate-500">T</span>
-                <span class="text-[11px] font-bold text-slate-500">W</span>
-                <span class="text-[11px] font-bold text-slate-500">T</span>
-                <span class="text-[11px] font-bold text-slate-500">F</span>
-                <span class="text-[11px] font-bold text-slate-500">S</span>
-            </div>
-            <div id="calendar-days" class="grid grid-cols-7 gap-1.5 text-center text-xs"></div>
-        </section>
+            <!-- Exercise List Container -->
+            <div id="exercise-container" class="space-y-4"></div>
 
-        <!-- 2. DAY SPLIT SELECTOR -->
-        <section id="split-tabs-section">
-            <div class="flex justify-between items-center mb-2 px-1">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Select Day Split</span>
-                <span class="text-xs text-cyan-400 font-semibold">2x / Week Hypertrophy</span>
-            </div>
-            <div id="split-tabs" class="grid grid-cols-4 gap-2">
-                <button onclick="switchSplit('push1', event)" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-cyan-500 text-slate-950 border-cyan-400 shadow-md">Push 1</button>
-                <button onclick="switchSplit('pull1', event)" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Pull 1</button>
-                <button onclick="switchSplit('legs1', event)" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Legs 1</button>
-                <button onclick="switchSplit('push2', event)" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Push 2</button>
-                <button onclick="switchSplit('pull2', event)" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Pull 2</button>
-                <button onclick="switchSplit('legs2', event)" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Legs 2</button>
-                <button onclick="switchSplit('rest', event)" class="split-btn col-span-2 px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Rest / Recovery</button>
-            </div>
-        </section>
+            <!-- Save & Log Workout Button -->
+            <button id="save-workout-btn" class="w-full py-4 rounded-2xl font-extrabold text-sm uppercase tracking-wider bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 shadow-lg shadow-cyan-500/20 hover:opacity-95 transition active:scale-[0.99]">
+                ✓ Save & Log Workout
+            </button>
 
-        <!-- ROUTINE TITLE & DESCRIPTION -->
-        <div id="routine-header" class="glass-panel p-5 rounded-2xl border border-cyan-500/20 relative overflow-hidden">
-            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
-            <h2 id="routine-title" class="text-lg font-black text-cyan-300">Push 1: Chest, Shoulders & Triceps</h2>
-            <p id="routine-desc" class="text-xs text-slate-400 mt-1">Heavy compound pressing focus for upper body growth.</p>
+            <!-- 10 Minute Circular Cycling Stopwatch -->
+            <section class="glass-panel rounded-2xl p-6 border border-cyan-500/30 space-y-4 bg-gradient-to-b from-slate-900/90 to-slate-950 shadow-xl flex flex-col items-center">
+                <div class="w-full flex items-center justify-between mb-2">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-lg">🚴</span>
+                        <h3 class="font-black text-sm text-cyan-300 uppercase tracking-wide">10 Min Cycling Cardio</h3>
+                    </div>
+                    <span id="cycling-status" class="text-[10px] font-extrabold text-cyan-400 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-500/30 uppercase">Ready</span>
+                </div>
+
+                <div class="relative w-44 h-44 flex items-center justify-center my-2">
+                    <svg class="w-full h-full" viewBox="0 0 100 100">
+                        <circle class="circle-bg" cx="50" cy="50" r="42"></circle>
+                        <circle id="cycling-progress-ring" class="circle-progress" cx="50" cy="50" r="42" stroke-dasharray="263.89" stroke-dashoffset="0"></circle>
+                    </svg>
+                    <div class="absolute flex flex-col items-center justify-center">
+                        <span id="cycling-timer-display" class="text-3xl font-black text-cyan-200 tracking-wider">10:00</span>
+                        <span class="text-[10px] text-slate-400 uppercase font-bold mt-0.5 tracking-widest">Cool Down</span>
+                    </div>
+                </div>
+
+                <div class="flex space-x-2.5 w-full pt-2">
+                    <button id="cycling-start-btn" class="flex-1 py-3 rounded-xl font-extrabold text-xs bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:opacity-90 transition shadow-md">Start</button>
+                    <button id="cycling-pause-btn" class="flex-1 py-3 rounded-xl font-extrabold text-xs bg-slate-800 text-slate-200 hover:bg-slate-700 transition border border-slate-700">Pause</button>
+                    <button id="cycling-reset-btn" class="px-5 py-3 rounded-xl font-extrabold text-xs bg-slate-900 text-slate-400 hover:bg-slate-800 transition border border-slate-800">Reset</button>
+                </div>
+            </section>
         </div>
 
-        <!-- EXERCISE LIST CONTAINER -->
-        <div id="exercise-container" class="space-y-4"></div>
-
-        <!-- SAVE & LOG WORKOUT BUTTON -->
-        <button onclick="saveWorkoutLog()" class="w-full py-4 rounded-2xl font-extrabold text-sm uppercase tracking-wider bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 shadow-lg shadow-cyan-500/20 hover:opacity-95 transition active:scale-[0.99]">
-            ✓ Save & Log Workout
-        </button>
-
-        <!-- 3. POST-WORKOUT 10 MINUTE CIRCULAR CYCLING STOPWATCH -->
-        <section class="glass-panel rounded-2xl p-6 border border-cyan-500/30 space-y-4 bg-gradient-to-b from-slate-900/90 to-slate-950 shadow-xl flex flex-col items-center">
-            <div class="w-full flex items-center justify-between mb-2">
-                <div class="flex items-center space-x-2">
-                    <span class="text-lg">🚴</span>
-                    <h3 class="font-black text-sm text-cyan-300 uppercase tracking-wide">10 Min Cycling Cardio</h3>
+        <!-- VIEW 2: GALLERY -->
+        <div id="view-gallery" class="space-y-4" style="display: none;">
+            <div class="glass-panel p-5 rounded-2xl border border-cyan-500/30 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-extrabold text-base text-cyan-300">Transformation Gallery</h3>
+                    <span class="text-xs text-slate-400">Weekly Physique Checks</span>
                 </div>
-                <span id="cycling-status" class="text-[10px] font-extrabold text-cyan-400 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-500/30 uppercase">Ready</span>
+                <p class="text-xs text-slate-400 leading-relaxed">Your progress photos uploaded via the Sunday task will appear here permanently.</p>
+                <div id="gallery-grid" class="grid grid-cols-2 gap-3 pt-2"></div>
             </div>
+        </div>
 
-            <!-- Circular Progress Ring Stopwatch -->
-            <div class="relative w-44 h-44 flex items-center justify-center my-2">
-                <svg class="w-full h-full" viewBox="0 0 100 100">
-                    <circle class="circle-bg" cx="50" cy="50" r="42"></circle>
-                    <circle id="cycling-progress-ring" class="circle-progress" cx="50" cy="50" r="42" stroke-dasharray="263.89" stroke-dashoffset="0"></circle>
-                </svg>
-                <div class="absolute flex flex-col items-center justify-center">
-                    <span id="cycling-timer-display" class="text-3xl font-black text-cyan-200 tracking-wider">10:00</span>
-                    <span class="text-[10px] text-slate-400 uppercase font-bold mt-0.5 tracking-widest">Cool Down</span>
+        <!-- VIEW 3: STATS -->
+        <div id="view-stats" class="space-y-4" style="display: none;">
+            <div class="glass-panel p-6 rounded-2xl border border-cyan-500/30 space-y-5 text-center">
+                <h3 class="font-extrabold text-lg text-cyan-300">Winter Arc Elite Stats</h3>
+                <div class="space-y-3">
+                    <div class="bg-gradient-to-r from-slate-900 to-cyan-950/50 p-4 rounded-xl border border-cyan-500/30">
+                        <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Current Elite Rank</p>
+                        <p id="stats-rank" class="text-xl font-black text-cyan-300 mt-1">⚡ Rookie Arc</p>
+                    </div>
+                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                        <p class="text-xs text-slate-400 uppercase font-bold">Current Streak</p>
+                        <p id="stats-streak" class="text-2xl font-black text-amber-400 mt-1">0 Days 🔥</p>
+                    </div>
+                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                        <p class="text-xs text-slate-400 uppercase font-bold">Next Milestone Goal</p>
+                        <p id="stats-next-goal" class="text-xs font-bold text-slate-300 mt-1">Reach 7 Days streak to unlock Crusher Rank!</p>
+                    </div>
                 </div>
             </div>
-
-            <div class="flex space-x-2.5 w-full pt-2">
-                <button onclick="startCyclingTimer()" id="cycling-start-btn" class="flex-1 py-3 rounded-xl font-extrabold text-xs bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:opacity-90 transition shadow-md">Start</button>
-                <button onclick="pauseCyclingTimer()" class="flex-1 py-3 rounded-xl font-extrabold text-xs bg-slate-800 text-slate-200 hover:bg-slate-700 transition border border-slate-700">Pause</button>
-                <button onclick="resetCyclingTimer()" class="px-5 py-3 rounded-xl font-extrabold text-xs bg-slate-900 text-slate-400 hover:bg-slate-800 transition border border-slate-800">Reset</button>
-            </div>
-        </section>
+        </div>
 
     </main>
 
-    <!-- DEMO MODAL -->
+    <!-- EXERCISE DEMO MODAL -->
     <div id="demo-modal" style="display: none;" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md items-center justify-center z-50 p-4">
         <div class="glass-panel w-full max-w-sm rounded-2xl p-5 border border-cyan-500/40 space-y-4 shadow-2xl relative">
             <div class="flex items-center justify-between">
                 <h3 id="modal-title" class="font-extrabold text-base text-cyan-300">Exercise Demo</h3>
-                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-cyan-400 font-bold">✕</button>
+                <button id="close-demo-btn" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-cyan-400 font-bold">✕</button>
             </div>
             <div class="flex justify-center bg-slate-950/80 p-3 rounded-xl border border-slate-800 min-h-[160px] items-center">
                 <img id="modal-img" src="" class="max-h-64 object-contain rounded-lg" alt="Demo">
             </div>
             <p id="modal-desc" class="text-xs text-slate-300 leading-relaxed text-center">Perform with controlled movement and strict posture.</p>
-            <button onclick="closeModal()" class="w-full py-2.5 rounded-xl font-bold text-xs bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition">Got It</button>
-        </div>
-    </div>
-
-    <!-- STATS MODAL -->
-    <div id="stats-modal" style="display: none;" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md items-center justify-center z-50 p-4">
-        <div class="glass-panel w-full max-w-sm rounded-2xl p-6 border border-cyan-500/40 space-y-4 shadow-2xl relative text-center">
-            <div class="flex items-center justify-between">
-                <h3 class="font-extrabold text-base text-cyan-300">Winter Arc Elite Stats</h3>
-                <button onclick="closeStatsModal()" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-cyan-400 font-bold">✕</button>
-            </div>
-            <div class="py-2 space-y-3">
-                <div class="bg-gradient-to-r from-slate-900 to-cyan-950/50 p-4 rounded-xl border border-cyan-500/30">
-                    <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Current Elite Rank</p>
-                    <p id="stats-rank" class="text-xl font-black text-cyan-300 mt-1">⚡ Rookie Arc</p>
-                </div>
-                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
-                    <p class="text-xs text-slate-400 uppercase font-bold">Current Streak</p>
-                    <p id="stats-streak" class="text-2xl font-black text-amber-400 mt-1">0 Days 🔥</p>
-                </div>
-                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
-                    <p class="text-xs text-slate-400 uppercase font-bold">Next Milestone Goal</p>
-                    <p id="stats-next-goal" class="text-xs font-bold text-slate-300 mt-1">Reach 7 Days streak to unlock Crusher Rank!</p>
-                </div>
-            </div>
-            <button onclick="closeStatsModal()" class="w-full py-3 rounded-xl font-bold text-xs bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition">Close</button>
-        </div>
-    </div>
-
-    <!-- GALLERY MODAL -->
-    <div id="gallery-modal" style="display: none;" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md items-center justify-center z-50 p-4">
-        <div class="glass-panel w-full max-w-md rounded-2xl p-6 border border-cyan-500/40 space-y-4 shadow-2xl relative max-h-[85vh] flex flex-col">
-            <div class="flex items-center justify-between">
-                <h3 class="font-extrabold text-base text-cyan-300">Transformation Gallery</h3>
-                <button onclick="closeGalleryModal()" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-cyan-400 font-bold">✕</button>
-            </div>
-            <p class="text-xs text-slate-400">Your weekly physique check photos uploaded on Sundays.</p>
-            
-            <div id="gallery-grid" class="grid grid-cols-2 gap-3 overflow-y-auto p-1 flex-1"></div>
-
-            <button onclick="closeGalleryModal()" class="w-full py-3 rounded-xl font-bold text-xs bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition">Close</button>
+            <button id="close-demo-btn-2" class="w-full py-2.5 rounded-xl font-bold text-xs bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition">Got It</button>
         </div>
     </div>
 
@@ -204,23 +199,23 @@
             </div>
         </div>
         <div class="flex space-x-2">
-            <button onclick="adjustRestTime(-15)" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg font-bold text-slate-300">-15s</button>
-            <button onclick="adjustRestTime(15)" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg font-bold text-slate-300">+15s</button>
-            <button onclick="stopRestTimer()" class="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-xs rounded-lg font-bold text-red-400">Stop</button>
+            <button id="rest-minus-btn" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg font-bold text-slate-300">-15s</button>
+            <button id="rest-plus-btn" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg font-bold text-slate-300">+15s</button>
+            <button id="rest-stop-btn" class="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-xs rounded-lg font-bold text-red-400">Stop</button>
         </div>
     </div>
 
-    <!-- BOTTOM NAV -->
+    <!-- BOTTOM NAV SWITCHER -->
     <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto glass-panel border-t border-slate-800 py-2.5 px-6 flex justify-around items-center z-40 bg-slate-950/95">
-        <button onclick="scrollToSection('split-tabs-section')" class="flex flex-col items-center text-cyan-400 focus:outline-none">
+        <button id="nav-workout-btn" class="flex flex-col items-center text-cyan-400 focus:outline-none transition">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span class="text-[10px] font-bold mt-1">Workout</span>
         </button>
-        <button onclick="openGalleryModal()" class="flex flex-col items-center text-slate-400 hover:text-cyan-400 transition focus:outline-none">
+        <button id="nav-gallery-btn" class="flex flex-col items-center text-slate-400 hover:text-cyan-400 transition focus:outline-none">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
             <span class="text-[10px] font-medium mt-1">Gallery</span>
         </button>
-        <button onclick="openStatsModal()" class="flex flex-col items-center text-slate-400 hover:text-cyan-400 transition focus:outline-none">
+        <button id="nav-stats-btn" class="flex flex-col items-center text-slate-400 hover:text-cyan-400 transition focus:outline-none">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
             <span class="text-[10px] font-medium mt-1">Stats</span>
         </button>
@@ -318,11 +313,56 @@
 
         document.getElementById('streak-count').innerText = `${streakCount} Days`;
 
-        function scrollToSection(id) {
-            const el = document.getElementById(id);
-            if(el) el.scrollIntoView({ behavior: 'smooth' });
+        // VIEW SWITCHING LOGIC
+        function switchView(viewName) {
+            document.getElementById('view-workout').style.display = viewName === 'workout' ? 'block' : 'none';
+            document.getElementById('view-gallery').style.display = viewName === 'gallery' ? 'block' : 'none';
+            document.getElementById('view-stats').style.display = viewName === 'stats' ? 'block' : 'none';
+
+            // Update bottom nav icons styling
+            const btnW = document.getElementById('nav-workout-btn');
+            const btnG = document.getElementById('nav-gallery-btn');
+            const btnS = document.getElementById('nav-stats-btn');
+
+            btnW.className = viewName === 'workout' ? 'flex flex-col items-center text-cyan-400 focus:outline-none transition' : 'flex flex-col items-center text-slate-400 hover:text-cyan-400 transition focus:outline-none';
+            btnG.className = viewName === 'gallery' ? 'flex flex-col items-center text-cyan-400 focus:outline-none transition' : 'flex flex-col items-center text-slate-400 hover:text-cyan-400 transition focus:outline-none';
+            btnS.className = viewName === 'stats' ? 'flex flex-col items-center text-cyan-400 focus:outline-none transition' : 'flex flex-col items-center text-slate-400 hover:text-cyan-400 transition focus:outline-none';
+
+            if(viewName === 'gallery') renderGalleryView();
+            if(viewName === 'stats') renderStatsView();
         }
-        window.scrollToSection = scrollToSection;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('nav-workout-btn').addEventListener('click', () => switchView('workout'));
+            document.getElementById('nav-gallery-btn').addEventListener('click', () => switchView('gallery'));
+            document.getElementById('nav-stats-btn').addEventListener('click', () => switchView('stats'));
+
+            document.getElementById('close-demo-btn').addEventListener('click', closeModal);
+            document.getElementById('close-demo-btn-2').addEventListener('click', closeModal);
+
+            document.querySelectorAll('.split-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    switchSplit(btn.getAttribute('data-split'), e);
+                });
+            });
+
+            document.getElementById('save-workout-btn').addEventListener('click', saveWorkoutLog);
+            document.getElementById('reset-btn').addEventListener('click', resetAllData);
+            document.getElementById('prev-month-btn').addEventListener('click', () => changeMonth(-1));
+            document.getElementById('next-month-btn').addEventListener('click', () => changeMonth(1));
+
+            document.getElementById('cycling-start-btn').addEventListener('click', startCyclingTimer);
+            document.getElementById('cycling-pause-btn').addEventListener('click', pauseCyclingTimer);
+            document.getElementById('cycling-reset-btn').addEventListener('click', resetCyclingTimer);
+
+            document.getElementById('rest-minus-btn').addEventListener('click', () => adjustRestTime(-15));
+            document.getElementById('rest-plus-btn').addEventListener('click', () => adjustRestTime(15));
+            document.getElementById('rest-stop-btn').addEventListener('click', stopRestTimer);
+
+            renderExercises();
+            renderCalendar();
+            updateCyclingDisplay();
+        });
 
         function switchSplit(splitKey, evt) {
             currentSplit = splitKey;
@@ -338,7 +378,6 @@
             document.getElementById('routine-desc').innerText = routine.desc;
             renderExercises();
         }
-        window.switchSplit = switchSplit;
 
         function renderExercises() {
             const container = document.getElementById('exercise-container');
@@ -360,10 +399,14 @@
                         </div>
                         <label class="block w-full py-3 rounded-xl border border-dashed border-amber-500/50 bg-slate-900/80 text-center cursor-pointer hover:bg-slate-900 transition">
                             <span class="text-xs font-extrabold text-amber-300">📷 Open Camera & Upload Photo</span>
-                            <input type="file" accept="image/*" capture="environment" onchange="handleWeeklyPhotoUpload(event)" class="hidden">
+                            <input type="file" accept="image/*" capture="environment" id="weekly-photo-input" class="hidden">
                         </label>
                     </div>
                 `;
+                setTimeout(() => {
+                    const photoInput = document.getElementById('weekly-photo-input');
+                    if(photoInput) photoInput.addEventListener('change', handleWeeklyPhotoUpload);
+                }, 100);
             }
 
             routine.exercises.forEach((ex, exIndex) => {
@@ -381,7 +424,7 @@
                                 <span class="text-[10px] text-slate-500 uppercase ml-1">kg</span>
                             </div>
                             <div class="w-20 text-center text-xs font-semibold text-slate-300">${ex.reps}</div>
-                            <button onclick="toggleSet(${exIndex}, ${s})" id="btn_${exIndex}_${s}" class="w-9 h-9 rounded-xl border flex items-center justify-center font-bold text-sm transition ${isDone}">
+                            <button data-ex="${exIndex}" data-set="${s}" class="set-done-btn w-9 h-9 rounded-xl border flex items-center justify-center font-bold text-sm transition ${isDone}">
                                 ✓
                             </button>
                         </div>
@@ -397,7 +440,7 @@
                             </div>
                             <div class="flex items-center space-x-2">
                                 <span class="text-[10px] bg-slate-900 px-2.5 py-1 rounded-lg text-cyan-400 font-bold border border-slate-800">⏱ 60s Rest</span>
-                                <button onclick="openDemoModal('${ex.name.replace(/'/g, "\\'")}', '${ex.img}', '${ex.tip.replace(/'/g, "\\'")}')" class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 hover:bg-cyan-500 hover:text-slate-950 flex items-center justify-center font-bold text-xs transition">ℹ️</button>
+                                <button data-name="${ex.name}" data-img="${ex.img}" data-tip="${ex.tip}" class="info-demo-btn w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 hover:bg-cyan-500 hover:text-slate-950 flex items-center justify-center font-bold text-xs transition">ℹ️</button>
                             </div>
                         </div>
                         <div class="pt-1">
@@ -411,6 +454,18 @@
                         </div>
                     </div>
                 `;
+            });
+
+            document.querySelectorAll('.set-done-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    toggleSet(parseInt(btn.getAttribute('data-ex')), parseInt(btn.getAttribute('data-set')));
+                });
+            });
+
+            document.querySelectorAll('.info-demo-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    openDemoModal(btn.getAttribute('data-name'), btn.getAttribute('data-img'), btn.getAttribute('data-tip'));
+                });
             });
         }
 
@@ -427,23 +482,37 @@
                 reader.readAsDataURL(file);
             }
         }
-        window.handleWeeklyPhotoUpload = handleWeeklyPhotoUpload;
 
-        // MODALS WITH RELIABLE INLINE DISPLAY TOGGLE
         function openDemoModal(name, imgPath, tipText) {
             document.getElementById('modal-title').innerText = name;
             document.getElementById('modal-img').src = imgPath;
             document.getElementById('modal-desc').innerText = tipText;
             document.getElementById('demo-modal').style.display = 'flex';
         }
-        window.openDemoModal = openDemoModal;
 
         function closeModal() {
             document.getElementById('demo-modal').style.display = 'none';
         }
-        window.closeModal = closeModal;
 
-        function openStatsModal() {
+        function renderGalleryView() {
+            const grid = document.getElementById('gallery-grid');
+            grid.innerHTML = '';
+
+            if(galleryPhotos.length === 0) {
+                grid.innerHTML = `<div class="col-span-2 text-center py-12 text-slate-500 text-xs">No physique photos uploaded yet.<br>Complete your Sunday task on the Workout tab!</div>`;
+            } else {
+                galleryPhotos.forEach((item) => {
+                    grid.innerHTML += `
+                        <div class="glass-panel p-2 rounded-xl border border-slate-800 space-y-1 text-center">
+                            <img src="${item.src}" class="w-full h-40 object-cover rounded-lg border border-slate-800" alt="Progress">
+                            <span class="text-[10px] text-cyan-400 font-bold">${item.date}</span>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function renderStatsView() {
             let rankName = "⚡ Rookie Arc";
             let nextGoalText = "Reach 7 Days streak to unlock Crusher Rank!";
             if(streakCount >= 30) {
@@ -460,41 +529,7 @@
             document.getElementById('stats-rank').innerText = rankName;
             document.getElementById('stats-streak').innerText = `${streakCount} Days 🔥`;
             document.getElementById('stats-next-goal').innerText = nextGoalText;
-
-            document.getElementById('stats-modal').style.display = 'flex';
         }
-        window.openStatsModal = openStatsModal;
-
-        function closeStatsModal() {
-            document.getElementById('stats-modal').style.display = 'none';
-        }
-        window.closeStatsModal = closeStatsModal;
-
-        function openGalleryModal() {
-            const grid = document.getElementById('gallery-grid');
-            grid.innerHTML = '';
-
-            if(galleryPhotos.length === 0) {
-                grid.innerHTML = `<div class="col-span-2 text-center py-8 text-slate-500 text-xs">No physique photos uploaded yet.<br>Complete your Sunday task to add photos!</div>`;
-            } else {
-                galleryPhotos.forEach((item) => {
-                    grid.innerHTML += `
-                        <div class="glass-panel p-2 rounded-xl border border-slate-800 space-y-1 text-center">
-                            <img src="${item.src}" class="w-full h-36 object-cover rounded-lg border border-slate-800" alt="Progress">
-                            <span class="text-[10px] text-cyan-400 font-bold">${item.date}</span>
-                        </div>
-                    `;
-                });
-            }
-
-            document.getElementById('gallery-modal').style.display = 'flex';
-        }
-        window.openGalleryModal = openGalleryModal;
-
-        function closeGalleryModal() {
-            document.getElementById('gallery-modal').style.display = 'none';
-        }
-        window.closeGalleryModal = closeGalleryModal;
 
         // REST TIMER ENGINE
         let restTimerInterval = null;
@@ -530,17 +565,15 @@
             restTimeLeftSeconds = Math.max(0, restTimeLeftSeconds + amount);
             updateRestDisplay();
         }
-        window.adjustRestTime = adjustRestTime;
 
         function stopRestTimer() {
             if (restTimerInterval) clearInterval(restTimerInterval);
             document.getElementById('rest-timer-bar').classList.add('translate-y-24', 'opacity-0');
         }
-        window.stopRestTimer = stopRestTimer;
 
         function toggleSet(exIndex, setNum) {
             const weightInput = document.getElementById(`w_${exIndex}_${setNum}`);
-            const btn = document.getElementById(`btn_${exIndex}_${setNum}`);
+            const btn = document.querySelector(`[data-ex="${exIndex}"][data-set="${setNum}"]`);
             
             if(!workoutData[selectedDateKey]) workoutData[selectedDateKey] = {};
             if(!workoutData[selectedDateKey][currentSplit]) workoutData[selectedDateKey][currentSplit] = {};
@@ -549,16 +582,15 @@
             const isCurrentlyDone = btn.classList.contains('bg-cyan-500');
 
             if(!isCurrentlyDone) {
-                btn.className = "w-9 h-9 rounded-xl border flex items-center justify-center font-bold text-sm transition bg-cyan-500 text-slate-950 border-cyan-400";
+                btn.className = "set-done-btn w-9 h-9 rounded-xl border flex items-center justify-center font-bold text-sm transition bg-cyan-500 text-slate-950 border-cyan-400";
                 workoutData[selectedDateKey][currentSplit][setKey] = { weight: weightInput.value, done: true };
                 startRestTimer(60);
             } else {
-                btn.className = "w-9 h-9 rounded-xl border flex items-center justify-center font-bold text-sm transition bg-slate-900/60 text-slate-400 border-slate-800";
+                btn.className = "set-done-btn w-9 h-9 rounded-xl border flex items-center justify-center font-bold text-sm transition bg-slate-900/60 text-slate-400 border-slate-800";
                 workoutData[selectedDateKey][currentSplit][setKey] = { weight: weightInput.value, done: false };
             }
             localStorage.setItem('winter_arc_logs', JSON.stringify(workoutData));
         }
-        window.toggleSet = toggleSet;
 
         function playBeep() {
             try {
@@ -581,7 +613,6 @@
             alert("Workout logged successfully & Streak updated!");
             renderCalendar();
         }
-        window.saveWorkoutLog = saveWorkoutLog;
 
         // CIRCULAR CYCLING STOPWATCH ENGINE
         let cyclingInterval = null;
@@ -617,14 +648,12 @@
                 }
             }, 1000);
         }
-        window.startCyclingTimer = startCyclingTimer;
 
         function pauseCyclingTimer() {
             isCyclingRunning = false;
             clearInterval(cyclingInterval);
             document.getElementById('cycling-status').innerText = "Paused";
         }
-        window.pauseCyclingTimer = pauseCyclingTimer;
 
         function resetCyclingTimer() {
             isCyclingRunning = false;
@@ -633,7 +662,6 @@
             updateCyclingDisplay();
             document.getElementById('cycling-status').innerText = "Ready";
         }
-        window.resetCyclingTimer = resetCyclingTimer;
 
         // CALENDAR LOGIC
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -642,7 +670,6 @@
             activeDate.setMonth(activeDate.getMonth() + direction);
             renderCalendar();
         }
-        window.changeMonth = changeMonth;
 
         function renderCalendar() {
             const year = activeDate.getFullYear();
@@ -673,7 +700,11 @@
                     btnClass += "bg-slate-900/60 text-slate-300 border-slate-800 hover:border-slate-700";
                 }
 
-                daysContainer.innerHTML += `<button onclick="selectCalendarDate(${year}, ${month}, ${d})" class="${btnClass}">${d}</button>`;
+                const dayBtn = document.createElement('button');
+                dayBtn.className = btnClass;
+                dayBtn.innerText = d;
+                dayBtn.addEventListener('click', () => selectCalendarDate(year, month, d));
+                daysContainer.appendChild(dayBtn);
             }
         }
 
@@ -683,7 +714,6 @@
             renderCalendar();
             renderExercises();
         }
-        window.selectCalendarDate = selectCalendarDate;
 
         function resetAllData() {
             if(confirm("Are you sure you want to reset all workout logs, gallery photos and streak history?")) {
@@ -696,11 +726,6 @@
                 renderExercises();
             }
         }
-        window.resetAllData = resetAllData;
-
-        renderExercises();
-        renderCalendar();
-        updateCyclingDisplay();
     </script>
 </body>
 </html>
