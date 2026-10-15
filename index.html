@@ -189,6 +189,20 @@
         </div>
     </div>
 
+    <!-- CAMERA MODAL -->
+    <div id="camera-modal" style="display: none;" class="fixed inset-0 bg-slate-950 flex-col items-center justify-between z-[60] p-4">
+        <div class="w-full max-w-md flex items-center justify-between">
+            <h3 class="font-extrabold text-base text-amber-300">Weekly Physique Photo</h3>
+            <button id="camera-close-btn" class="w-9 h-9 rounded-full bg-slate-900 border border-slate-800 text-slate-300 font-bold">✕</button>
+        </div>
+        <video id="camera-video" autoplay playsinline muted class="w-full max-w-md flex-1 min-h-0 my-3 rounded-2xl bg-black object-cover border border-slate-800"></video>
+        <div class="w-full max-w-md flex items-center justify-between pb-4">
+            <button id="camera-switch-btn" class="px-4 py-3 rounded-xl text-xs font-extrabold bg-slate-900 text-cyan-300 border border-slate-700">🔄 Flip</button>
+            <button id="camera-shutter-btn" class="w-16 h-16 rounded-full bg-amber-400 border-4 border-slate-950 ring-2 ring-amber-300 active:scale-95 transition" aria-label="Capture"></button>
+            <span id="camera-facing-label" class="w-[72px] text-center text-[10px] font-bold text-slate-400 uppercase">Rear</span>
+        </div>
+    </div>
+
     <!-- REST TIMER WIDGET -->
     <div id="rest-timer-bar" class="fixed bottom-20 left-4 right-4 max-w-sm mx-auto glass-panel p-3 rounded-2xl border border-cyan-500/30 flex items-center justify-between shadow-2xl transition-all duration-300 translate-y-24 opacity-0 pointer-events-none z-50">
         <div class="flex items-center space-x-3">
@@ -228,10 +242,10 @@
                 desc: "Heavy compound pressing focus with overhead pressing strength.",
                 exercises: [
                     { name: "Barbell Bench Press", sets: 4, reps: "6-8", type: "compound", img: "Workout/Bench press.jpg", tip: "Keep shoulder blades retracted and feet firmly planted." },
-                    { name: "Incline Dumbbell Press", sets: 3, reps: "8-10", type: "compound", img: "Workout/Incline press.jpg", tip: "Set bench to 30-45 degrees for upper chest activation." },
-                    { name: "Overhead Shoulder Press", sets: 3, reps: "8-10", type: "compound", img: "Workout/Shoulder press.jpg", tip: "Brace core tightly to protect your lower back." },
-                    { name: "Lateral Raises", sets: 4, reps: "12-15", type: "isolation", img: "Workout/Lateral raise.jpg", tip: "Lead slightly with elbows and control the descent." },
-                    { name: "Tricep Pushdowns", sets: 3, reps: "10-12", type: "isolation", img: "Workout/Tricep pushdown.jpg", tip: "Keep elbows locked to your sides throughout." }
+                    { name: "Incline Dumbbell Press", sets: 3, reps: "8-10", type: "compound", img: "Workout/Incline dumbell press.jpg", tip: "Set bench to 30-45 degrees for upper chest activation." },
+                    { name: "Overhead Shoulder Press", sets: 3, reps: "8-10", type: "compound", img: "Workout/Overhead press.jpg", tip: "Brace core tightly to protect your lower back." },
+                    { name: "Lateral Raises", sets: 4, reps: "12-15", type: "isolation", img: "Workout/Lateral raises.jpg", tip: "Lead slightly with elbows and control the descent." },
+                    { name: "Tricep Pushdowns", sets: 3, reps: "10-12", type: "isolation", img: "Workout/Triceps pulldown.jpg", tip: "Keep elbows locked to your sides throughout." }
                 ]
             },
             pull1: {
@@ -240,9 +254,9 @@
                 exercises: [
                     { name: "Pull-Ups", sets: 4, reps: "8-10", type: "compound", img: "Workout/Pullups.jpg", tip: "Pull chest up to the bar and squeeze lats at top." },
                     { name: "Lat Pulldown (Neutral)", sets: 3, reps: "10-12", type: "compound", img: "Workout/Lat pulldown.jpg", tip: "Drive elbows down and back smoothly." },
-                    { name: "Single-Arm Dumbbell Row", sets: 3, reps: "10-12", type: "compound", img: "Workout/Db row.jpg", tip: "Pull toward your hip pocket for lat engagement." },
-                    { name: "Face Pulls", sets: 4, reps: "15", type: "isolation", img: "Workout/Face pull.jpg", tip: "Pull toward ears with high elbows for rear delts." },
-                    { name: "Incline Dumbbell Curls", sets: 3, reps: "12", type: "isolation", img: "Workout/Db curl.jpg", tip: "Let arms hang back fully for a deep bicep stretch." }
+                    { name: "Single-Arm Dumbbell Row", sets: 3, reps: "10-12", type: "compound", img: "Workout/barbell rows.jpg", tip: "Pull toward your hip pocket for lat engagement." },
+                    { name: "Face Pulls", sets: 4, reps: "15", type: "isolation", img: "Workout/Face pulls.jpg", tip: "Pull toward ears with high elbows for rear delts." },
+                    { name: "Incline Dumbbell Curls", sets: 3, reps: "12", type: "isolation", img: "Workout/biceps curl.jpg", tip: "Let arms hang back fully for a deep bicep stretch." }
                 ]
             },
             legs1: {
@@ -253,29 +267,29 @@
                     { name: "Leg Press", sets: 3, reps: "10-12", type: "compound", img: "Workout/Leg press.gif", tip: "Place feet mid-platform for quad/glute balance." },
                     { name: "Bulgarian Split Squat", sets: 3, reps: "10/leg", type: "compound", img: "Workout/Split squat.jpg", tip: "Keep torso upright for quad focus or lean forward for glutes." },
                     { name: "Cable Crunches", sets: 3, reps: "15", type: "core", img: "Workout/Cable crunches.jpg", tip: "Flex spine downward using abs, not arms." },
-                    { name: "Plank", sets: 3, reps: "60s", type: "core", img: "Workout/plank.gif", tip: "Squeeze glutes and brace core tightly." }
+                    { name: "Plank", sets: 3, reps: "60s", type: "core", img: "Workout/Plank.gif", tip: "Squeeze glutes and brace core tightly." }
                 ]
             },
             push2: {
                 title: "Push 2: Chest & Shoulder Hypertrophy",
                 desc: "Volume-focused chest press with lateral delt emphasis.",
                 exercises: [
-                    { name: "Incline Barbell Press", sets: 4, reps: "8-10", type: "compound", img: "Workout/Incline bench.jpg", tip: "Press bar in a slight arc over upper chest." },
-                    { name: "Dumbbell Bench Press", sets: 3, reps: "10-12", type: "compound", img: "Workout/Db bench press.jpg", tip: "Allow a natural stretch at the bottom." },
-                    { name: "Dumbbell Shoulder Press", sets: 3, reps: "10-12", type: "compound", img: "Workout/Db shoulder press.jpg", tip: "Press dumbbells slightly inward at the top." },
-                    { name: "Cable Lateral Raises", sets: 4, reps: "15", type: "isolation", img: "Workout/Cable lateral raise.jpg", tip: "Constant tension across the entire movement." },
-                    { name: "Overhead Tricep Extension", sets: 3, reps: "12", type: "isolation", img: "Workout/Tricep extension.jpg", tip: "Keep upper arms stationary next to head." }
+                    { name: "Incline Barbell Press", sets: 4, reps: "8-10", type: "compound", img: "Workout/Incline dumbell press.jpg", tip: "Press bar in a slight arc over upper chest." },
+                    { name: "Dumbbell Bench Press", sets: 3, reps: "10-12", type: "compound", img: "Workout/Bench press.jpg", tip: "Allow a natural stretch at the bottom." },
+                    { name: "Dumbbell Shoulder Press", sets: 3, reps: "10-12", type: "compound", img: "Workout/Overhead press.jpg", tip: "Press dumbbells slightly inward at the top." },
+                    { name: "Cable Lateral Raises", sets: 4, reps: "15", type: "isolation", img: "Workout/Lateral raises.jpg", tip: "Constant tension across the entire movement." },
+                    { name: "Overhead Tricep Extension", sets: 3, reps: "12", type: "isolation", img: "Workout/Overhead triceps extension.jpg", tip: "Keep upper arms stationary next to head." }
                 ]
             },
             pull2: {
                 title: "Pull 2 (Back Thickness Focus)",
                 desc: "Mid back, lats, rear delts, biceps.",
                 exercises: [
-                    { name: "Seated Cable Rows", sets: 4, reps: "10-12", type: "compound", img: "Workout/Seated row.jpg", tip: "Pull to lower abdomen with slight back arch." },
+                    { name: "Seated Cable Rows", sets: 4, reps: "10-12", type: "compound", img: "Workout/cable rows.jpg", tip: "Pull to lower abdomen with slight back arch." },
                     { name: "Lat Pulldown (Neutral)", sets: 3, reps: "12", type: "compound", img: "Workout/Lat pulldown.jpg", tip: "Control the weight on the way up." },
                     { name: "Rear Delt Flyes", sets: 4, reps: "15", type: "isolation", img: "Workout/Rear delt fly.jpg", tip: "Focus on squeezing shoulder blades." },
-                    { name: "Preacher Bicep Curl", sets: 3, reps: "12", type: "isolation", img: "Workout/Preacher curl.jpg", tip: "Keep upper arms flat against pad." },
-                    { name: "Hammer Curls", sets: 3, reps: "12", type: "isolation", img: "Workout/Hammer curl.jpg", tip: "Targets brachialis and forearms." }
+                    { name: "Preacher Bicep Curl", sets: 3, reps: "12", type: "isolation", img: "Workout/preacher curl.jpg", tip: "Keep upper arms flat against pad." },
+                    { name: "Hammer Curls", sets: 3, reps: "12", type: "isolation", img: "Workout/hammer curl.jpg", tip: "Targets brachialis and forearms." }
                 ]
             },
             legs2: {
@@ -293,7 +307,7 @@
                 title: "Rest & Active Recovery",
                 desc: "Hydrate, stretch, and allow muscle protein synthesis.",
                 exercises: [
-                    { name: "Full Body Mobility Routine", sets: 1, reps: "20 mins", type: "recovery", img: "Workout/plank.gif", tip: "Focus on hips, spine, and shoulders." },
+                    { name: "Full Body Mobility Routine", sets: 1, reps: "20 mins", type: "recovery", img: "Workout/Plank.gif", tip: "Focus on hips, spine, and shoulders." },
                     { name: "Light Walking / Hydration", sets: 1, reps: "Active", type: "recovery", img: "Workout/Squat.jpg", tip: "Stay active and drink plenty of water." }
                 ]
             }
@@ -405,6 +419,10 @@
                 btn.addEventListener('click', () => switchSplit(btn.getAttribute('data-split')));
             });
 
+            document.getElementById('camera-close-btn').addEventListener('click', closeCamera);
+            document.getElementById('camera-switch-btn').addEventListener('click', switchCamera);
+            document.getElementById('camera-shutter-btn').addEventListener('click', capturePhoto);
+
             document.getElementById('save-workout-btn').addEventListener('click', saveWorkoutLog);
             document.getElementById('reset-btn').addEventListener('click', resetAllData);
             document.getElementById('prev-month-btn').addEventListener('click', () => changeMonth(-1));
@@ -484,10 +502,10 @@
                                 <p class="text-[11px] text-slate-400">Capture your weekly progress photo with the camera</p>
                             </div>
                         </div>
-                        <label class="block w-full py-3 rounded-xl border border-dashed border-amber-500/50 bg-slate-900/80 text-center cursor-pointer hover:bg-slate-900 transition">
+                        <button id="open-camera-btn" class="block w-full py-3 rounded-xl border border-dashed border-amber-500/50 bg-slate-900/80 text-center cursor-pointer hover:bg-slate-900 transition">
                             <span class="text-xs font-extrabold text-amber-300">📷 Open Camera & Take Photo</span>
-                            <input type="file" accept="image/*" capture="environment" id="weekly-photo-input" class="hidden">
-                        </label>
+                        </button>
+                        <input type="file" accept="image/*" capture="environment" id="weekly-photo-input" class="hidden">
                     </div>
                 `;
             }
@@ -562,6 +580,8 @@
 
             const photoInput = document.getElementById('weekly-photo-input');
             if (photoInput) photoInput.addEventListener('change', handleWeeklyPhotoUpload);
+            const camBtn = document.getElementById('open-camera-btn');
+            if (camBtn) camBtn.addEventListener('click', openCamera);
         }
 
         // ---------- Photos ----------
@@ -592,14 +612,79 @@
             compressImage(file, (dataUrl) => {
                 input.value = '';
                 if (!dataUrl) { alert("Couldn't read that image. Please try another photo."); return; }
-                galleryPhotos.push({ date: selectedDateKey, src: dataUrl });
-                if (saveJSON(LS_GALLERY, galleryPhotos)) {
-                    alert("Sunday weekly progress photo uploaded successfully to Gallery! 📸");
-                } else {
-                    galleryPhotos.pop();
-                    alert("Storage is full — the photo could not be saved. Delete older photos or reset data.");
-                }
+                savePhoto(dataUrl);
             });
+        }
+
+        function savePhoto(dataUrl) {
+            galleryPhotos.push({ date: selectedDateKey, src: dataUrl });
+            if (saveJSON(LS_GALLERY, galleryPhotos)) {
+                alert("Sunday weekly progress photo uploaded successfully to Gallery! 📸");
+            } else {
+                galleryPhotos.pop();
+                alert("Storage is full — the photo could not be saved. Delete older photos or reset data.");
+            }
+        }
+
+        // ---------- In-app camera (front / rear switch) ----------
+        let camStream = null;
+        let camFacing = 'environment';
+
+        function stopCameraStream() {
+            if (camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; }
+        }
+
+        async function startCamera() {
+            stopCameraStream();
+            const video = document.getElementById('camera-video');
+            try {
+                camStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: { ideal: camFacing } },
+                    audio: false
+                });
+                video.srcObject = camStream;
+                video.style.transform = camFacing === 'user' ? 'scaleX(-1)' : 'none'; // mirror front preview only
+                document.getElementById('camera-facing-label').innerText = camFacing === 'user' ? 'Front' : 'Rear';
+            } catch (e) {
+                closeCamera();
+                alert("Couldn't access the camera. Allow camera permission for this page, or the phone's camera app will open instead.");
+                const fallback = document.getElementById('weekly-photo-input');
+                if (fallback) fallback.click();
+            }
+        }
+
+        function openCamera() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                const fallback = document.getElementById('weekly-photo-input');
+                if (fallback) fallback.click();
+                return;
+            }
+            document.getElementById('camera-modal').style.display = 'flex';
+            startCamera();
+        }
+
+        function closeCamera() {
+            stopCameraStream();
+            document.getElementById('camera-modal').style.display = 'none';
+        }
+
+        function switchCamera() {
+            camFacing = camFacing === 'environment' ? 'user' : 'environment';
+            startCamera();
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('camera-video');
+            if (!video.videoWidth) return;
+            const maxDim = 800;
+            const scale = Math.min(1, maxDim / Math.max(video.videoWidth, video.videoHeight));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(video.videoWidth * scale);
+            canvas.height = Math.round(video.videoHeight * scale);
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            closeCamera();
+            savePhoto(dataUrl);
         }
 
         function openDemoModal(name, imgPath, tipText) {
