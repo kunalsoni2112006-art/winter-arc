@@ -257,7 +257,7 @@
       const calendarEl = document.getElementById('calendar');
       calendarEl.innerHTML = '';
 
-      let workoutSeqCount = 0; // To track PPL sequence skipping Sundays
+      let workoutSeqCount = 0;
 
       monthsData.forEach((m, mIdx) => {
         const monthDiv = document.createElement('div');
@@ -271,10 +271,10 @@
         }
 
         for (let day = 1; day <= m.days; day++) {
-          const dayOfWeekIndex = (m.startDay + day - 1) % 7; // 0=Mon ... 6=Sun
+          const dayOfWeekIndex = (m.startDay + day - 1) % 7;
           let workoutType = "REST";
 
-          if (dayOfWeekIndex !== 6) { // Not Sunday
+          if (dayOfWeekIndex !== 6) {
             const pplCycle = ["PUSH", "PULL", "LEGS"];
             workoutType = pplCycle[workoutSeqCount % 3];
             workoutSeqCount++;
@@ -328,9 +328,9 @@
     }
 
     function openDayRoutine(monthName, dayNum, type) {
-      document.getElementById('modalDateTitle.innerText = `${type} - ${dayNum} ${monthName}`;
+      document.getElementById('modalDateTitle').innerText = `${type} - ${dayNum} ${monthName}`;
       
-      let listHtml = `<div style="font-size:0.9rem; color:#ff9800; margin-bottom:10px; font-weight:bold;">Routine for ${type}:</div>`;
+      let listHtml = `<div style="font-size:0.9rem; color:#ff9800; margin-bottom:10px; font-weight:bold;">Routine Exercises:</div>`;
       
       routineDetails[type].forEach(ex => {
         listHtml += `
