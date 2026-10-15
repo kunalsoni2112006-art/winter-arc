@@ -1,442 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Winter Arc Tracker</title>
-  <style>
-    body {
-      background-color: #121212;
-      color: #e0e0e0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winter Arc Workout Tracker (Oct-Dec 2026)</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent: #238636;
+            --accent-hover: #2ea043;
+            --border: #30363d;
+        }
 
-    h1 {
-      color: #ff9800;
-      text-align: center;
-      margin-bottom: 5px;
-      font-size: 1.5rem;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
 
-    .subtitle {
-      color: #aaa;
-      font-size: 0.85rem;
-      margin-bottom: 15px;
-      text-align: center;
-    }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-    .rank-card {
-      background: #1e1e1e;
-      border: 1px solid #ff9800;
-      border-radius: 10px;
-      padding: 12px 20px;
-      text-align: center;
-      width: 100%;
-      max-width: 420px;
-      box-sizing: border-box;
-      margin-bottom: 20px;
-    }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-    .rank-title {
-      color: #4caf50;
-      font-size: 1.1rem;
-      font-weight: bold;
-      margin-top: 4px;
-    }
+        header h1 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
 
-    .month-container {
-      width: 100%;
-      max-width: 420px;
-      background: #1e1e1e;
-      border-radius: 10px;
-      padding: 15px;
-      box-sizing: border-box;
-      margin-bottom: 20px;
-    }
+        header p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
 
-    .month-title {
-      color: #ff9800;
-      margin-top: 0;
-      font-size: 1.2rem;
-      border-bottom: 1px solid #333;
-      padding-bottom: 8px;
-    }
+        /* Category Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
 
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
-      margin-top: 10px;
-      text-align: center;
-    }
+        .tab-btn {
+            flex: 1;
+            padding: 10px 12px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
 
-    .day-header {
-      font-size: 0.75rem;
-      font-weight: bold;
-      color: #ffb74d;
-      padding-bottom: 5px;
-    }
+        .tab-btn.active {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
 
-    .day-box {
-      background: #2a2a2a;
-      border-radius: 6px;
-      padding: 6px 2px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 55px;
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: 0.2s;
-    }
+        /* Exercise Cards Container */
+        .exercise-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
 
-    .day-box:hover {
-      border-color: #ff9800;
-    }
+        .exercise-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
 
-    .day-box.empty {
-      background: transparent;
-      cursor: default;
-      border: none;
-    }
+        .image-container {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            min-height: 220px;
+        }
 
-    .day-number {
-      font-size: 0.75rem;
-      color: #fff;
-      font-weight: bold;
-    }
+        .image-container img {
+            max-width: 100%;
+            max-height: 240px;
+            object-fit: contain;
+        }
 
-    .workout-type {
-      font-size: 0.6rem;
-      color: #ffb74d;
-      font-weight: 600;
-      margin: 2px 0;
-    }
+        .exercise-info {
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
 
-    .workout-type.rest {
-      color: #777;
-    }
+        .exercise-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
 
-    .day-box input[type="checkbox"] {
-      width: 15px;
-      height: 15px;
-      accent-color: #ff9800;
-      cursor: pointer;
-    }
+        .exercise-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
 
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
+        .meta-badge {
+            background-color: rgba(240, 246, 252, 0.08);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
 
-    .modal-content {
-      background: #1e1e1e;
-      padding: 20px;
-      border-radius: 12px;
-      width: 88%;
-      max-width: 360px;
-      text-align: center;
-      border: 1px solid #ff9800;
-      box-sizing: border-box;
-      max-height: 85vh;
-      overflow-y: auto;
-    }
-
-    .modal-title {
-      color: #ff9800;
-      margin-top: 0;
-      font-size: 1.2rem;
-      border-bottom: 1px solid #333;
-      padding-bottom: 8px;
-    }
-
-    .exercise-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid #2a2a2a;
-      text-align: left;
-    }
-
-    .ex-name {
-      color: #ffb74d;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-
-    .ex-sets {
-      color: #888;
-      font-size: 0.8rem;
-    }
-
-    .animation-gif {
-      width: 100%;
-      height: 220px;
-      object-fit: contain;
-      background: #000;
-      border-radius: 8px;
-      margin: 15px 0;
-      border: 1px solid #ff9800;
-    }
-
-    .close-btn {
-      background: #ff9800;
-      color: #000;
-      border: none;
-      padding: 10px;
-      font-weight: bold;
-      border-radius: 6px;
-      width: 100%;
-      cursor: pointer;
-      margin-top: 15px;
-    }
-  </style>
+        /* Responsive adjustments */
+        @media (min-width: 768px) {
+            body {
+                max-width: 700px;
+                padding: 24px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <h1>🔥 WINTER ARC TRACKER 🔥</h1>
-  <div class="subtitle">6-Day PPL Routine (Oct - Dec 2026)<br><small>(Tap any date box to view workout routine)</small></div>
+    <header>
+        <h1>⚡ Winter Arc Tracker</h1>
+        <p>October – December 2026 PPL Routine</p>
+    </header>
 
-  <div class="rank-card">
-    <div>Rank: <span id="rankTitle" class="rank-title">Recruit ⚡</span></div>
-    <div style="font-size:0.85rem; color:#aaa; margin-top:4px;">Workouts Done: <span id="doneCount">0</span> / 78</div>
-  </div>
-
-  <div id="calendar"></div>
-
-  <div id="routineModal" class="modal-overlay">
-    <div class="modal-content">
-      <h3 id="modalDateTitle" class="modal-title">Workout Routine</h3>
-      <div id="modalRoutineList"></div>
-      <button class="close-btn" onclick="closeModal('routineModal')">Close</button>
+    <!-- Navigation Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('push')">Push</button>
+        <button class="tab-btn" onclick="switchTab('pull')">Pull</button>
+        <button class="tab-btn" onclick="switchTab('legsAndCore')">Legs & Core</button>
     </div>
-  </div>
 
-  <div id="animModal" class="modal-overlay" style="z-index: 1100;">
-    <div class="modal-content">
-      <h3 id="animTitle" class="modal-title" style="color: #4caf50;">Exercise Demo</h3>
-      <img id="animGif" class="animation-gif" src="" alt="Workout Animation">
-      <div id="animDesc" style="font-size: 0.85rem; color: #ccc; margin-bottom: 10px; line-height: 1.4;"></div>
-      <button class="close-btn" onclick="closeModal('animModal')">Back to Routine</button>
+    <!-- Content Area -->
+    <div id="exercise-container" class="exercise-list">
+        <!-- Dynamic Content loads here -->
     </div>
-  </div>
 
-  <script>
-    const monthsData = [
-      { name: "October 2026", days: 31, startDay: 3 },
-      { name: "November 2026", days: 30, startDay: 6 },
-      { name: "December 2026", days: 31, startDay: 1 }
-    ];
+    <script>
+        // Database matching your repository structure and clean filenames
+        const workoutData = {
+            push: [
+                { id: "push_1", name: "Barbell Bench Press", image: "Workout/Bench press.jpg", sets: "3-4", reps: "8-12" },
+                { id: "push_2", name: "Incline Dumbbell Press", image: "Workout/Incline dumbell press.jpg", sets: "3-4", reps: "10-12" },
+                { id: "push_3", name: "Overhead Press", image: "Workout/Overhead press.jpg", sets: "3", reps: "8-10" },
+                { id: "push_4", name: "Lateral Raises", image: "Workout/Lateral raises.jpg", sets: "4", reps: "12-15" },
+                { id: "push_5", name: "Triceps Pulldown", image: "Workout/Triceps pulldown.jpg", sets: "3", reps: "10-12" },
+                { id: "push_6", name: "Overhead Triceps Extension", image: "Workout/Overhead triceps extension.jpg", sets: "3", reps: "10-12" },
+                { id: "push_7", name: "Bench Dips / Tricep Dips", image: "Workout/Tricep dips.jpg", sets: "3", reps: "Failure" }
+            ],
+            pull: [
+                { id: "pull_1", name: "Lat Pulldown", image: "Workout/Lat pulldown.jpg", sets: "4", reps: "10-12" },
+                { id: "pull_2", name: "Barbell Rows", image: "Workout/barbell rows.jpg", sets: "3-4", reps: "8-10" },
+                { id: "pull_3", name: "Seated Cable Rows", image: "Workout/cable rows.jpg", sets: "3-4", reps: "10-12" },
+                { id: "pull_4", name: "Face Pulls", image: "Workout/Face pulls.jpg", sets: "3", reps: "15" },
+                { id: "pull_5", name: "Biceps Curl", image: "Workout/biceps curl.jpg", sets: "3", reps: "10-12" },
+                { id: "pull_6", name: "Hammer Curl", image: "Workout/hammer curl.jpg", sets: "3", reps: "10-12" },
+                { id: "pull_7", name: "Preacher Curl", image: "Workout/preacher curl.jpg", sets: "3", reps: "10-12" }
+            ],
+            legsAndCore: [
+                { id: "leg_1", name: "Leg Curl / Hamstring Curl", image: "Workout/Leg curl.jpg", sets: "3-4", reps: "10-12" },
+                { id: "core_1", name: "Plank", image: "Workout/Plank.gif", sets: "3", reps: "60 sec" }
+            ]
+        };
 
-    const weekHeaders = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+        function switchTab(category) {
+            // Update active tab button style
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
 
-    const exerciseDatabase = {
-      "Bench Press": {
-        sets: "3 Sets x 8-12 reps",
-        gif: "Gifs/bench press.gif",
-        desc: "Lie flat on bench, grip barbell slightly wider than shoulder-width, lower smoothly to mid-chest and press up."
-      },
-      "Overhead Press": {
-        sets: "3 Sets x 8-10 reps",
-        gif: "",
-        desc: "Stand tall with core tight, hold barbell at upper chest level and press straight overhead."
-      },
-      "Incline Dumbbell Press": {
-        sets: "3 Sets x 10-12 reps",
-        gif: "",
-        desc: "Press dumbbells upward on an inclined bench targeting the upper chest."
-      },
-      "Tricep Pushdown": {
-        sets: "4 Sets x 12-15 reps",
-        gif: "",
-        desc: "Keep elbows pinned to your sides, push cable bar down fully and squeeze triceps."
-      },
-      "Pull Ups": {
-        sets: "3 Sets x Max reps",
-        gif: "",
-        desc: "Pull your body upward until your chin clears the bar with controlled descent."
-      },
-      "Barbell Row": {
-        sets: "3 Sets x 8-10 reps",
-        gif: "",
-        desc: "Hinge at hips with flat back, pull barbell toward lower ribs, squeezing back."
-      },
-      "Lat Pulldown": {
-        sets: "3 Sets x 10-12 reps",
-        gif: "",
-        desc: "Grab wide bar, pull down smoothly toward upper chest while leaning back slightly."
-      },
-      "Bicep Curls": {
-        sets: "4 Sets x 12 reps",
-        gif: "",
-        desc: "Keep upper arms stationary, curl dumbbells upward toward shoulders and contract biceps."
-      },
-      "Squats": {
-        sets: "3 Sets x 8-10 reps",
-        gif: "",
-        desc: "Rest bar on upper traps, break at hips and knees, squat deep, then drive through heels."
-      },
-      "Deadlift": {
-        sets: "3 Sets x 5 reps",
-        gif: "",
-        desc: "Keep spine neutral, grip bar tightly, drive through floor with legs and lock hips."
-      },
-      "Leg Press": {
-        sets: "3 Sets x 10-12 reps",
-        gif: "",
-        desc: "Place feet on platform, lower sled securely to 90 degrees and press back up."
-      },
-      "Calf Raises": {
-        sets: "4 Sets x 15-20 reps",
-        gif: "",
-        desc: "Stand on edge of platform, drop heels for deep stretch and push up high onto toes."
-      }
-    };
-
-    const routineMapping = {
-      "PUSH": ["Bench Press", "Overhead Press", "Incline Dumbbell Press", "Tricep Pushdown"],
-      "PULL": ["Pull Ups", "Barbell Row", "Lat Pulldown", "Bicep Curls"],
-      "LEGS": ["Squats", "Deadlift", "Leg Press", "Calf Raises"],
-      "REST": []
-    };
-
-    function renderCalendar() {
-      const calendarEl = document.getElementById('calendar');
-      calendarEl.innerHTML = '';
-
-      let workoutSeqCount = 0;
-
-      monthsData.forEach((m, mIdx) => {
-        const monthDiv = document.createElement('div');
-        monthDiv.className = 'month-container';
-        
-        let html = `<h3 class="month-title">${m.name}</h3><div class="calendar-grid">`;
-        weekHeaders.forEach(h => html += `<div class="day-header">${h}</div>`);
-
-        for (let i = 0; i < m.startDay; i++) {
-          html += `<div class="day-box empty"></div>`;
+            renderExercises(category);
         }
 
-        for (let day = 1; day <= m.days; day++) {
-          const dayOfWeekIndex = (m.startDay + day - 1) % 7;
-          let workoutType = "REST";
+        function renderExercises(category) {
+            const container = document.getElementById('exercise-container');
+            const items = workoutData[category];
 
-          if (dayOfWeekIndex !== 6) {
-            const pplCycle = ["PUSH", "PULL", "LEGS"];
-            workoutType = pplCycle[workoutSeqCount % 3];
-            workoutSeqCount++;
-          }
+            container.innerHTML = '';
 
-          const isRest = workoutType === "REST";
-          const dayKey = `day_${mIdx}_${day}`;
-          const isChecked = localStorage.getItem(dayKey) === 'true';
-
-          html += `
-            <div class="day-box" onclick="openDayRoutine('${m.name}', ${day}, '${workoutType}')">
-              <div class="day-number">${day}</div>
-              <div class="workout-type ${isRest ? 'rest' : ''}">${workoutType}</div>
-              ${!isRest ? `<input type="checkbox" id="${dayKey}" ${isChecked ? 'checked' : ''} onclick="event.stopPropagation()" onchange="toggleCheck('${dayKey}')">` : '<div style="height:15px;"></div>'}
-            </div>
-          `;
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'exercise-card';
+                card.innerHTML = `
+                    <div class="image-container">
+                        <img src="${item.image}" alt="${item.name}" loading="lazy">
+                    </div>
+                    <div class="exercise-info">
+                        <div class="exercise-title">${item.name}</div>
+                        <div class="exercise-meta">
+                            <span class="meta-badge">Sets: ${item.sets}</span>
+                            <span class="meta-badge">Reps: ${item.reps}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
 
-        html += `</div>`;
-        monthDiv.innerHTML = html;
-        calendarEl.appendChild(monthDiv);
-      });
-
-      updateStats();
-    }
-
-    function toggleCheck(key) {
-      const checkbox = document.getElementById(key);
-      localStorage.setItem(key, checkbox.checked);
-      updateStats();
-    }
-
-    function updateStats() {
-      let count = 0;
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('day_') && localStorage.getItem(key) === 'true') {
-          count++;
-        }
-      }
-
-      document.getElementById('doneCount').innerText = count;
-
-      let rank = "Recruit ⚡";
-      if (count >= 10) rank = "Hypertrophy Adept ⚡";
-      if (count >= 25) rank = "Iron Disciple 🔥";
-      if (count >= 45) rank = "Arc Master 💪";
-      if (count >= 60) rank = "Unstoppable Beast 👑";
-
-      document.getElementById('rankTitle').innerText = rank;
-    }
-
-    function openDayRoutine(monthName, dayNum, type) {
-      document.getElementById('modalDateTitle').innerText = `${type} - ${dayNum} ${monthName}`;
-      
-      let listHtml = `<div style="font-size:0.85rem; color:#ff9800; margin-bottom:10px; font-weight:bold;">Tap exercise for animated demo:</div>`;
-      
-      if (type === "REST") {
-        listHtml += `<div class="exercise-row"><div><div class="ex-name">Rest & Recovery</div><div class="ex-sets">Hydrate, Stretch & Sleep 💤</div></div></div>`;
-      } else {
-        routineMapping[type].forEach(exName => {
-          const exInfo = exerciseDatabase[exName];
-          listHtml += `
-            <div class="exercise-row">
-              <div>
-                <div class="ex-name" onclick="openExerciseDemo('${exName}')">${exName}</div>
-                <div class="ex-sets">${exInfo.sets}</div>
-              </div>
-            </div>
-          `;
-        });
-      }
-
-      document.getElementById('modalRoutineList').innerHTML = listHtml;
-      document.getElementById('routineModal').style.display = 'flex';
-    }
-
-    function openExerciseDemo(exName) {
-      const info = exerciseDatabase[exName];
-      document.getElementById('animTitle').innerText = exName;
-      
-      const gifEl = document.getElementById('animGif');
-      if (info.gif) {
-        gifEl.src = info.gif;
-        gifEl.style.display = 'block';
-      } else {
-        gifEl.style.display = 'none';
-      }
-
-      document.getElementById('animDesc').innerText = info.desc;
-      document.getElementById('animModal').style.display = 'flex';
-    }
-
-    function closeModal(modalId) {
-      document.getElementById(modalId).style.display = 'none';
-    }
-
-    renderCalendar();
-  </script>
+        // Initial Load
+        renderExercises('push');
+    </script>
 </body>
 </html>
