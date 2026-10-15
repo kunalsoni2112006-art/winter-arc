@@ -13,7 +13,6 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #030712; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
         
         .circle-bg { fill: none; stroke: #1e293b; stroke-width: 8; }
         .circle-progress { fill: none; stroke: #06b6d4; stroke-width: 8; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 1s linear; }
@@ -45,7 +44,7 @@
 
     <main class="w-full max-w-md p-4 space-y-6">
 
-        <!-- 1. ACTIVITY CALENDAR (At the Top) -->
+        <!-- 1. ACTIVITY CALENDAR -->
         <section id="calendar-section" class="glass-panel rounded-2xl p-4 shadow-xl border border-slate-800">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center space-x-2">
@@ -75,24 +74,23 @@
                 <span class="text-[11px] font-bold text-slate-500">S</span>
             </div>
             <div id="calendar-days" class="grid grid-cols-7 gap-1.5 text-center text-xs">
-                <!-- Dynamically populated days -->
             </div>
         </section>
 
         <!-- 2. DAY SPLIT SELECTOR -->
-        <section>
+        <section id="split-tabs-section">
             <div class="flex justify-between items-center mb-2 px-1">
                 <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Select Day Split</span>
                 <span class="text-xs text-cyan-400 font-semibold">2x / Week Hypertrophy</span>
             </div>
             <div id="split-tabs" class="grid grid-cols-4 gap-2">
-                <button onclick="switchSplit('push1')" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-cyan-500 text-slate-950 border-cyan-400 shadow-md">Push 1</button>
-                <button onclick="switchSplit('pull1')" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Pull 1</button>
-                <button onclick="switchSplit('legs1')" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Legs 1</button>
-                <button onclick="switchSplit('push2')" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Push 2</button>
-                <button onclick="switchSplit('pull2')" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Pull 2</button>
-                <button onclick="switchSplit('legs2')" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Legs 2</button>
-                <button onclick="switchSplit('rest')" class="split-btn col-span-2 px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Rest / Recovery</button>
+                <button onclick="switchSplit('push1', event)" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-cyan-500 text-slate-950 border-cyan-400 shadow-md">Push 1</button>
+                <button onclick="switchSplit('pull1', event)" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Pull 1</button>
+                <button onclick="switchSplit('legs1', event)" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Legs 1</button>
+                <button onclick="switchSplit('push2', event)" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Push 2</button>
+                <button onclick="switchSplit('pull2', event)" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Pull 2</button>
+                <button onclick="switchSplit('legs2', event)" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Legs 2</button>
+                <button onclick="switchSplit('rest', event)" class="split-btn col-span-2 px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700">Rest / Recovery</button>
             </div>
         </section>
 
@@ -105,7 +103,6 @@
 
         <!-- EXERCISE LIST CONTAINER -->
         <div id="exercise-container" class="space-y-4">
-            <!-- Dynamically populated exercise items -->
         </div>
 
         <!-- SAVE & LOG WORKOUT BUTTON -->
@@ -135,7 +132,6 @@
                 </div>
             </div>
 
-            <!-- Stopwatch Control Buttons -->
             <div class="flex space-x-2.5 w-full pt-2">
                 <button onclick="startCyclingTimer()" id="cycling-start-btn" class="flex-1 py-3 rounded-xl font-extrabold text-xs bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:opacity-90 transition shadow-md">Start</button>
                 <button onclick="pauseCyclingTimer()" class="flex-1 py-3 rounded-xl font-extrabold text-xs bg-slate-800 text-slate-200 hover:bg-slate-700 transition border border-slate-700">Pause</button>
@@ -145,30 +141,30 @@
 
     </main>
 
-    <!-- EXERCISE DEMO MODAL POPUP -->
-    <div id="demo-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <!-- DEMO MODAL -->
+    <div id="demo-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center z-50 p-4">
         <div class="glass-panel w-full max-w-sm rounded-2xl p-5 border border-cyan-500/40 space-y-4 shadow-2xl relative">
             <div class="flex items-center justify-between">
                 <h3 id="modal-title" class="font-extrabold text-base text-cyan-300">Exercise Demo</h3>
                 <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-cyan-400 font-bold">✕</button>
             </div>
-            <div class="flex justify-center bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                <img id="modal-img" src="" class="max-h-64 object-contain rounded-lg" alt="Exercise Demo">
+            <div class="flex justify-center bg-slate-950/80 p-3 rounded-xl border border-slate-800 min-h-[160px] items-center">
+                <img id="modal-img" src="" class="max-h-64 object-contain rounded-lg" alt="Demo">
             </div>
             <p id="modal-desc" class="text-xs text-slate-300 leading-relaxed text-center">Perform with controlled movement and strict posture.</p>
             <button onclick="closeModal()" class="w-full py-2.5 rounded-xl font-bold text-xs bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition">Got It</button>
         </div>
     </div>
 
-    <!-- STATS MODAL POPUP (Rank System & Next Goal) -->
-    <div id="stats-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <!-- STATS MODAL -->
+    <div id="stats-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center z-50 p-4">
         <div class="glass-panel w-full max-w-sm rounded-2xl p-6 border border-cyan-500/40 space-y-4 shadow-2xl relative text-center">
             <div class="flex items-center justify-between">
                 <h3 class="font-extrabold text-base text-cyan-300">Winter Arc Elite Stats</h3>
                 <button onclick="closeStatsModal()" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-cyan-400 font-bold">✕</button>
             </div>
             <div class="py-2 space-y-3">
-                <div class="bg-gradient-to-r from-slate-900 to-cyan-950/40 p-4 rounded-xl border border-cyan-500/30">
+                <div class="bg-gradient-to-r from-slate-900 to-cyan-950/50 p-4 rounded-xl border border-cyan-500/30">
                     <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Current Elite Rank</p>
                     <p id="stats-rank" class="text-xl font-black text-cyan-300 mt-1">⚡ Rookie Arc</p>
                 </div>
@@ -178,15 +174,15 @@
                 </div>
                 <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
                     <p class="text-xs text-slate-400 uppercase font-bold">Next Milestone Goal</p>
-                    <p id="stats-next-goal" class="text-xs font-bold text-slate-300 mt-1">Reach 7 Days Streak to unlock Crusher Rank!</p>
+                    <p id="stats-next-goal" class="text-xs font-bold text-slate-300 mt-1">Reach 7 Days streak to unlock Crusher Rank!</p>
                 </div>
             </div>
             <button onclick="closeStatsModal()" class="w-full py-3 rounded-xl font-bold text-xs bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition">Close</button>
         </div>
     </div>
 
-    <!-- GALLERY MODAL POPUP (Weekly Photo Uploads) -->
-    <div id="gallery-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <!-- GALLERY MODAL -->
+    <div id="gallery-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center z-50 p-4">
         <div class="glass-panel w-full max-w-md rounded-2xl p-6 border border-cyan-500/40 space-y-4 shadow-2xl relative max-h-[85vh] flex flex-col">
             <div class="flex items-center justify-between">
                 <h3 class="font-extrabold text-base text-cyan-300">Transformation Gallery</h3>
@@ -195,14 +191,13 @@
             <p class="text-xs text-slate-400">Your weekly physique check photos uploaded on Sundays.</p>
             
             <div id="gallery-grid" class="grid grid-cols-2 gap-3 overflow-y-auto p-1 flex-1">
-                <!-- Dynamically populated uploaded photos -->
             </div>
 
             <button onclick="closeGalleryModal()" class="w-full py-3 rounded-xl font-bold text-xs bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition">Close</button>
         </div>
     </div>
 
-    <!-- FLOATING REST TIMER WIDGET -->
+    <!-- REST TIMER WIDGET -->
     <div id="rest-timer-bar" class="fixed bottom-20 left-4 right-4 max-w-sm mx-auto glass-panel p-3 rounded-2xl border border-cyan-500/30 flex items-center justify-between shadow-2xl transition-all duration-300 translate-y-24 opacity-0 z-50">
         <div class="flex items-center space-x-3">
             <div class="w-9 h-9 rounded-xl bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold text-sm">⏱️</div>
@@ -218,9 +213,9 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar (Workout, Gallery, Stats) -->
+    <!-- BOTTOM NAV -->
     <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto glass-panel border-t border-slate-800 py-2.5 px-6 flex justify-around items-center z-40 bg-slate-950/95">
-        <button onclick="scrollToSection('split-tabs')" class="flex flex-col items-center text-cyan-400 focus:outline-none">
+        <button onclick="scrollToSection('split-tabs-section')" class="flex flex-col items-center text-cyan-400 focus:outline-none">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span class="text-[10px] font-bold mt-1">Workout</span>
         </button>
@@ -327,15 +322,18 @@
         document.getElementById('streak-count').innerText = `${streakCount} Days`;
 
         function scrollToSection(id) {
-            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+            const el = document.getElementById(id);
+            if(el) el.scrollIntoView({ behavior: 'smooth' });
         }
 
-        function switchSplit(splitKey) {
+        function switchSplit(splitKey, evt) {
             currentSplit = splitKey;
             document.querySelectorAll('.split-btn').forEach(btn => {
                 btn.className = "split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700";
             });
-            event.target.className = "split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-cyan-500 text-slate-950 border-cyan-400 shadow-md";
+            if(evt && evt.target) {
+                evt.target.className = "split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border bg-cyan-500 text-slate-950 border-cyan-400 shadow-md";
+            }
             
             const routine = routines[splitKey];
             document.getElementById('routine-title').innerText = routine.title;
@@ -349,7 +347,6 @@
             const routine = routines[currentSplit];
             const savedLog = workoutData[selectedDateKey]?.[currentSplit] || {};
 
-            // Check if today is Sunday (Day 0)
             const isSunday = new Date(selectedDateKey).getDay() === 0;
 
             if (isSunday) {
@@ -401,7 +398,7 @@
                             </div>
                             <div class="flex items-center space-x-2">
                                 <span class="text-[10px] bg-slate-900 px-2.5 py-1 rounded-lg text-cyan-400 font-bold border border-slate-800">⏱ 60s Rest</span>
-                                <button onclick="openDemoModal('${ex.name}', '${ex.img}', '${ex.tip}')" class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 hover:bg-cyan-500 hover:text-slate-950 flex items-center justify-center font-bold text-xs transition" title="View Demo">ℹ️</button>
+                                <button onclick="openDemoModal('${ex.name}', '${ex.img}', '${ex.tip}')" class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 hover:bg-cyan-500 hover:text-slate-950 flex items-center justify-center font-bold text-xs transition">ℹ️</button>
                             </div>
                         </div>
                         <div class="pt-1">
@@ -418,7 +415,6 @@
             });
         }
 
-        // WEEKLY PHOTO UPLOAD HANDLER
         function handleWeeklyPhotoUpload(event) {
             const file = event.target.files[0];
             if(file) {
@@ -433,22 +429,23 @@
             }
         }
 
-        // MODALS
+        // MODAL TOGGLES FIXED
         function openDemoModal(name, imgPath, tipText) {
             document.getElementById('modal-title').innerText = name;
             document.getElementById('modal-img').src = imgPath;
             document.getElementById('modal-desc').innerText = tipText;
-            document.getElementById('demo-modal').classList.remove('hidden');
-            document.getElementById('demo-modal').classList.add('flex');
+            const el = document.getElementById('demo-modal');
+            el.classList.remove('hidden');
+            el.classList.add('flex');
         }
 
         function closeModal() {
-            document.getElementById('demo-modal').classList.remove('flex');
-            document.getElementById('demo-modal').classList.add('hidden');
+            const el = document.getElementById('demo-modal');
+            el.classList.remove('flex');
+            el.classList.add('hidden');
         }
 
         function openStatsModal() {
-            // Rank calculation based on streak
             let rankName = "⚡ Rookie Arc";
             let nextGoalText = "Reach 7 Days streak to unlock Crusher Rank!";
             if(streakCount >= 30) {
@@ -466,13 +463,15 @@
             document.getElementById('stats-streak').innerText = `${streakCount} Days 🔥`;
             document.getElementById('stats-next-goal').innerText = nextGoalText;
 
-            document.getElementById('stats-modal').classList.remove('hidden');
-            document.getElementById('stats-modal').classList.add('flex');
+            const el = document.getElementById('stats-modal');
+            el.classList.remove('hidden');
+            el.classList.add('flex');
         }
 
         function closeStatsModal() {
-            document.getElementById('stats-modal').classList.remove('flex');
-            document.getElementById('stats-modal').classList.add('hidden');
+            const el = document.getElementById('stats-modal');
+            el.classList.remove('flex');
+            el.classList.add('hidden');
         }
 
         function openGalleryModal() {
@@ -492,13 +491,15 @@
                 });
             }
 
-            document.getElementById('gallery-modal').classList.remove('hidden');
-            document.getElementById('gallery-modal').classList.add('flex');
+            const el = document.getElementById('gallery-modal');
+            el.classList.remove('hidden');
+            el.classList.add('flex');
         }
 
         function closeGalleryModal() {
-            document.getElementById('gallery-modal').classList.remove('flex');
-            document.getElementById('gallery-modal').classList.add('hidden');
+            const el = document.getElementById('gallery-modal');
+            el.classList.remove('flex');
+            el.classList.add('hidden');
         }
 
         // REST TIMER ENGINE
@@ -682,7 +683,7 @@
         }
 
         function resetAllData() {
-            if(confirm("Are you sure you want to reset all workout logs and streak history?")) {
+            if(confirm("Are you sure you want to reset all workout logs, gallery photos and streak history?")) {
                 localStorage.clear();
                 workoutData = {};
                 galleryPhotos = [];
