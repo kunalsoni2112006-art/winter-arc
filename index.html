@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winter Arc Workout & Progress Tracker</title>
+    <title>Winter Arc Ultimate Tracker</title>
     <style>
         :root {
             --bg-color: #0d1117;
@@ -13,6 +13,7 @@
             --accent: #238636;
             --accent-hover: #2ea043;
             --border: #30363d;
+            --rest-color: #1f6feb;
         }
 
         * {
@@ -26,24 +27,47 @@
             background-color: var(--bg-color);
             color: var(--text-primary);
             padding: 16px;
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
         }
 
         header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         header h1 {
-            font-size: 1.6rem;
-            color: var(--text-primary);
-            margin-bottom: 4px;
+            font-size: 1.5rem;
+            margin-bottom: 2px;
         }
 
         header p {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
+        }
+
+        /* Stats & Rank Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            font-size: 0.85rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            font-size: 1rem;
+            color: var(--accent);
         }
 
         /* Calendar Section */
@@ -51,96 +75,97 @@
             background-color: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 20px;
+            padding: 12px;
+            margin-bottom: 16px;
         }
 
         .calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            font-size: 0.9rem;
             font-weight: bold;
+            margin-bottom: 8px;
         }
 
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
+            gap: 5px;
             text-align: center;
         }
 
         .day-name {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-secondary);
-            margin-bottom: 4px;
+            font-weight: bold;
+            padding-bottom: 4px;
         }
 
         .day-cell {
             padding: 8px 0;
-            background-color: rgba(240, 246, 252, 0.05);
+            background-color: rgba(240, 246, 252, 0.03);
             border: 1px solid var(--border);
             border-radius: 6px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
             user-select: none;
-        }
-
-        .day-cell.active {
-            background-color: var(--accent);
-            color: white;
-            border-color: var(--accent);
-            font-weight: bold;
-        }
-
-        /* Tabs */
-        .tabs {
             display: flex;
-            gap: 8px;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            transition: all 0.2s;
+        }
+
+        .day-cell:hover {
+            border-color: var(--accent);
+        }
+
+        .day-cell.selected {
+            border: 2px solid var(--text-primary);
+        }
+
+        .day-cell.rest {
+            background-color: rgba(31, 111, 235, 0.15);
+            border-color: var(--rest-color);
+        }
+
+        .day-cell.completed {
+            background-color: rgba(35, 134, 54, 0.25);
+            border-color: var(--accent);
+        }
+
+        .day-badge {
+            font-size: 0.6rem;
+            padding: 1px 4px;
+            border-radius: 3px;
+            background: rgba(0,0,0,0.3);
+        }
+
+        /* Workout View Panel */
+        .workout-panel {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
             margin-bottom: 16px;
         }
 
-        .tab-btn {
-            flex: 1;
-            padding: 10px 12px;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .tab-btn.active {
-            background-color: var(--accent);
-            color: white;
-            border-color: var(--accent);
+        .workout-panel h3 {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         /* Progress Bar */
-        .progress-container {
-            margin-bottom: 16px;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 12px;
-        }
-
-        .progress-title {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-            display: flex;
-            justify-content: space-between;
-        }
-
         .progress-bar-bg {
             background-color: var(--border);
-            height: 8px;
-            border-radius: 4px;
+            height: 6px;
+            border-radius: 3px;
             overflow: hidden;
+            margin-bottom: 16px;
         }
 
         .progress-bar-fill {
@@ -154,13 +179,13 @@
         .exercise-list {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
         }
 
         .exercise-card {
-            background-color: var(--card-bg);
+            background-color: rgba(22, 27, 34, 0.6);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -172,21 +197,21 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 10px;
-            min-height: 220px;
+            padding: 8px;
+            min-height: 180px;
         }
 
         .image-container img {
             max-width: 100%;
-            max-height: 240px;
+            max-height: 200px;
             object-fit: contain;
         }
 
         .exercise-info {
-            padding: 14px 16px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px;
         }
 
         .exercise-header-row {
@@ -196,7 +221,7 @@
         }
 
         .exercise-title {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             font-weight: 700;
         }
 
@@ -209,15 +234,87 @@
 
         .exercise-meta {
             display: flex;
-            gap: 8px;
-            font-size: 0.85rem;
+            gap: 6px;
+            font-size: 0.75rem;
             color: var(--text-secondary);
         }
 
         .meta-badge {
             background-color: rgba(240, 246, 252, 0.08);
-            padding: 4px 8px;
+            padding: 3px 6px;
             border-radius: 4px;
+        }
+
+        /* Weekly Progress Photos (100% LocalStorage Privacy) */
+        .photo-section {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .photo-section h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .photo-upload-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        input[type="file"] {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .photo-card {
+            position: relative;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+            aspect-ratio: 1;
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-delete {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(255, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rest-msg {
+            text-align: center;
+            padding: 30px;
+            color: var(--rest-color);
+            font-weight: bold;
+            font-size: 1.1rem;
         }
     </style>
 </head>
@@ -225,142 +322,290 @@
 
     <header>
         <h1>⚡ Winter Arc Tracker</h1>
-        <p>October – December 2026 PPL Routine</p>
+        <p>October – December 2026 PPL Protocol</p>
     </header>
+
+    <!-- Stats & Rank Bar -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span>Rank</span>
+            <span class="stat-value" id="user-rank">Novice</span>
+        </div>
+        <div class="stat-item">
+            <span>Current Streak</span>
+            <span class="stat-value" id="user-streak">0 Days</span>
+        </div>
+        <div class="stat-item">
+            <span>Workouts Done</span>
+            <span class="stat-value" id="total-completed">0</span>
+        </div>
+    </div>
 
     <!-- Calendar Streak Section -->
     <div class="calendar-section">
         <div class="calendar-header">
-            <span>📅 October 2026 Tracker</span>
+            <span>📅 October 2026 Schedule</span>
+            <span style="font-size: 0.75rem; color: var(--text-secondary);">Tap date to view/log</span>
         </div>
-        <div class="calendar-grid" id="calendar-grid">
-            <!-- Dynamic Calendar Days -->
-        </div>
+        <div class="calendar-grid" id="calendar-grid"></div>
     </div>
 
-    <!-- Workout Completion Progress -->
-    <div class="progress-container">
-        <div class="progress-title">
-            <span>Daily Workout Progress</span>
-            <span id="progress-text">0%</span>
-        </div>
-        <div class="progress-bar-bg">
+    <!-- Active Workout View Panel -->
+    <div class="workout-panel">
+        <h3 id="panel-title">Select a date from calendar</h3>
+        <div class="progress-bar-bg" id="progress-bar-wrapper">
             <div class="progress-bar-fill" id="progress-fill"></div>
         </div>
+        <div id="workout-content" class="exercise-list">
+            <p style="color: var(--text-secondary); text-size: 0.9rem;">Click any date above to check scheduled exercises and log your progress.</p>
+        </div>
     </div>
 
-    <!-- Navigation Tabs -->
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('push', event)">Push</button>
-        <button class="tab-btn" onclick="switchTab('pull', event)">Pull</button>
-        <button class="tab-btn" onclick="switchTab('legsAndCore', event)">Legs & Core</button>
+    <!-- Weekly Physique Progress (Local Storage Only) -->
+    <div class="photo-section">
+        <h3>🔒 Private Weekly Physique Log (Local Storage)</h3>
+        <div class="photo-upload-row">
+            <input type="file" id="imageInput" accept="image/*">
+            <button onclick="savePhoto()" style="padding: 6px 12px; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Save Pic</button>
+        </div>
+        <div class="photo-grid" id="photo-grid"></div>
     </div>
-
-    <!-- Content Area -->
-    <div id="exercise-container" class="exercise-list"></div>
 
     <script>
-        const workoutData = {
-            push: [
-                { id: "push_1", name: "Barbell Bench Press", image: "Workout/Bench press.jpg", sets: "3-4", reps: "8-12" },
-                { id: "push_2", name: "Incline Dumbbell Press", image: "Workout/Incline dumbell press.jpg", sets: "3-4", reps: "10-12" },
-                { id: "push_3", name: "Overhead Press", image: "Workout/Overhead press.jpg", sets: "3", reps: "8-10" },
-                { id: "push_4", name: "Lateral Raises", image: "Workout/Lateral raises.jpg", sets: "4", reps: "12-15" },
-                { id: "push_5", name: "Triceps Pulldown", image: "Workout/Triceps pulldown.jpg", sets: "3", reps: "10-12" },
-                { id: "push_6", name: "Overhead Triceps Extension", image: "Workout/Overhead triceps extension.jpg", sets: "3", reps: "10-12" },
-                { id: "push_7", name: "Bench Dips / Tricep Dips", image: "Workout/Tricep dips.jpg", sets: "3", reps: "Failure" }
+        // PPL Routine Rotation: Push 1 -> Pull 1 -> Leg 1 -> Push 2 -> Pull 2 -> Leg 2 -> Rest (Sunday cycle mapped)
+        const workoutLibrary = {
+            "Push 1": [
+                { id: "p1_1", name: "Barbell Bench Press", image: "Workout/Bench press.jpg", sets: "3-4", reps: "8-12" },
+                { id: "p1_2", name: "Incline Dumbbell Press", image: "Workout/Incline dumbell press.jpg", sets: "3-4", reps: "10-12" },
+                { id: "p1_3", name: "Overhead Press", image: "Workout/Overhead press.jpg", sets: "3", reps: "8-10" },
+                { id: "p1_4", name: "Lateral Raises", image: "Workout/Lateral raises.jpg", sets: "4", reps: "12-15" }
             ],
-            pull: [
-                { id: "pull_1", name: "Lat Pulldown", image: "Workout/Lat pulldown.jpg", sets: "4", reps: "10-12" },
-                { id: "pull_2", name: "Barbell Rows", image: "Workout/barbell rows.jpg", sets: "3-4", reps: "8-10" },
-                { id: "pull_3", name: "Seated Cable Rows", image: "Workout/cable rows.jpg", sets: "3-4", reps: "10-12" },
-                { id: "pull_4", name: "Face Pulls", image: "Workout/Face pulls.jpg", sets: "3", reps: "15" },
-                { id: "pull_5", name: "Biceps Curl", image: "Workout/biceps curl.jpg", sets: "3", reps: "10-12" },
-                { id: "pull_6", name: "Hammer Curl", image: "Workout/hammer curl.jpg", sets: "3", reps: "10-12" },
-                { id: "pull_7", name: "Preacher Curl", image: "Workout/preacher curl.jpg", sets: "3", reps: "10-12" }
+            "Pull 1": [
+                { id: "pu1_1", name: "Lat Pulldown", image: "Workout/Lat pulldown.jpg", sets: "4", reps: "10-12" },
+                { id: "pu1_2", name: "Barbell Rows", image: "Workout/barbell rows.jpg", sets: "3-4", reps: "8-10" },
+                { id: "pu1_3", name: "Seated Cable Rows", image: "Workout/cable rows.jpg", sets: "3-4", reps: "10-12" },
+                { id: "pu1_4", name: "Face Pulls", image: "Workout/Face pulls.jpg", sets: "3", reps: "15" }
             ],
-            legsAndCore: [
-                { id: "leg_1", name: "Leg Curl / Hamstring Curl", image: "Workout/Leg curl.jpg", sets: "3-4", reps: "10-12" },
-                { id: "core_1", name: "Plank", image: "Workout/Plank.gif", sets: "3", reps: "60 sec" }
+            "Leg 1": [
+                { id: "l1_1", name: "Leg Curl / Hamstring Curl", image: "Workout/Leg curl.jpg", sets: "3-4", reps: "10-12" },
+                { id: "l1_2", name: "Plank (Core)", image: "Workout/Plank.gif", sets: "3", reps: "60 sec" }
+            ],
+            "Push 2": [
+                { id: "p2_1", name: "Triceps Pulldown", image: "Workout/Triceps pulldown.jpg", sets: "3", reps: "10-12" },
+                { id: "p2_2", name: "Overhead Triceps Extension", image: "Workout/Overhead triceps extension.jpg", sets: "3", reps: "10-12" },
+                { id: "p2_3", name: "Bench Dips", image: "Workout/Tricep dips.jpg", sets: "3", reps: "Failure" }
+            ],
+            "Pull 2": [
+                { id: "pu2_1", name: "Biceps Curl", image: "Workout/biceps curl.jpg", sets: "3", reps: "10-12" },
+                { id: "pu2_2", name: "Hammer Curl", image: "Workout/hammer curl.jpg", sets: "3", reps: "10-12" },
+                { id: "pu2_3", name: "Preacher Curl", image: "Workout/preacher curl.jpg", sets: "3", reps: "10-12" }
+            ],
+            "Leg 2": [
+                { id: "l2_1", name: "Leg Curl / Hamstring Curl", image: "Workout/Leg curl.jpg", sets: "3-4", reps: "10-12" },
+                { id: "l2_2", name: "Plank (Core)", image: "Workout/Plank.gif", sets: "3", reps: "60 sec" }
             ]
         };
 
-        let currentCategory = 'push';
-        let completedExercises = JSON.parse(localStorage.getItem('completedExercises')) || {};
-        let completedDays = JSON.parse(localStorage.getItem('completedDays')) || {};
+        const rotationOrder = ["Push 1", "Pull 1", "Leg 1", "Push 2", "Pull 2", "Leg 2"];
+
+        // State Management stored securely in localStorage
+        let workoutLogs = JSON.parse(localStorage.getItem('winterArcLogs')) || {}; 
+        let savedPhotos = JSON.parse(localStorage.getItem('winterArcPhotos')) || [];
+        let selectedDate = null;
+
+        // Determine workout type based on day index (skipping Sundays as Rest)
+        function getWorkoutTypeForDay(dayNum) {
+            // Oct 1, 2026 is Thursday. Let's map sequence cleanly.
+            let workoutCountIndex = 0;
+            for (let d = 1; d < dayNum; d++) {
+                let dateObj = new Date(2026, 9, d);
+                if (dateObj.getDay() !== 0) { // Not Sunday
+                    workoutCountIndex++;
+                }
+            }
+            let dateObj = new Date(2026, 9, dayNum);
+            if (dateObj.getDay() === 0) return "Rest";
+            return rotationOrder[workoutCountIndex % rotationOrder.length];
+        }
 
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
-            for (let i = 1; i <= 31; i++) {
-                const day = document.createElement('div');
-                day.className = `day-cell ${completedDays[i] ? 'active' : ''}`;
-                day.innerText = i;
-                day.onclick = () => toggleDay(i);
-                grid.appendChild(day);
+
+            const daysHeader = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+            daysHeader.forEach(d => {
+                const headerCell = document.createElement('div');
+                headerCell.className = 'day-name';
+                headerCell.innerText = d;
+                grid.appendChild(headerCell);
+            });
+
+            // Adjust grid start for Oct 2026 (Oct 1 is Thursday -> index 3 if Mon start)
+            // Oct 1 2026 getDay() -> 4 (Thu). Mon-based offset = 3 blank cells.
+            let firstDayIndex = (new Date(2026, 9, 1).getDay() + 6) % 7;
+            for (let i = 0; i < firstDayIndex; i++) {
+                const empty = document.createElement('div');
+                grid.appendChild(empty);
             }
+
+            for (let i = 1; i <= 31; i++) {
+                const cell = document.createElement('div');
+                const wType = getWorkoutTypeForDay(i);
+                
+                let isCompleted = workoutLogs[i] && workoutLogs[i].completed;
+                let isRest = wType === "Rest";
+
+                cell.className = `day-cell ${isRest ? 'rest' : ''} ${isCompleted ? 'completed' : ''} ${selectedDate === i ? 'selected' : ''}`;
+                cell.innerHTML = `<span>${i}</span><span class="day-badge">${isRest ? 'REST' : wType}</span>`;
+                cell.onclick = () => selectDate(i);
+                grid.appendChild(cell);
+            }
+            updateStats();
         }
 
-        function toggleDay(day) {
-            completedDays[day] = !completedDays[day];
-            localStorage.setItem('completedDays', JSON.stringify(completedDays));
+        function selectDate(day) {
+            selectedDate = day;
             renderCalendar();
+            renderWorkoutPanel(day);
         }
 
-        function switchTab(category, evt) {
-            currentCategory = category;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            evt.target.classList.add('active');
-            renderExercises();
-        }
+        function renderWorkoutPanel(day) {
+            const wType = getWorkoutTypeForDay(day);
+            const titleEl = document.getElementById('panel-title');
+            const contentEl = document.getElementById('workout-content');
+            const progressFill = document.getElementById('progress-fill');
+            const progressWrapper = document.getElementById('progress-bar-wrapper');
 
-        function toggleExercise(id) {
-            completedExercises[id] = !completedExercises[id];
-            localStorage.setItem('completedExercises', JSON.stringify(completedExercises));
-            updateProgress();
-        }
+            if (!workoutLogs[day]) {
+                workoutLogs[day] = { type: wType, checked: {}, completed: false };
+            }
 
-        function updateProgress() {
-            const currentList = workoutData[currentCategory];
-            const completedCount = currentList.filter(item => completedExercises[item.id]).length;
-            const percentage = Math.round((completedCount / currentList.length) * 100) || 0;
+            if (wType === "Rest") {
+                titleEl.innerHTML = `October ${day}, 2026 — Rest Day 🛌`;
+                progressWrapper.style.display = 'none';
+                contentEl.innerHTML = `<div class="rest-msg">Enjoy your recovery today! Muscle grows while you rest. 💪</div>`;
+                return;
+            }
+
+            progressWrapper.style.display = 'block';
+            titleEl.innerHTML = `October ${day, day} — ${wType}`;
             
-            document.getElementById('progress-fill').style.width = `${percentage}%`;
-            document.getElementById('progress-text').innerText = `${percentage}%`;
-        }
+            const exercises = workoutLibrary[wType] || [];
+            contentEl.innerHTML = '';
 
-        function renderExercises() {
-            const container = document.getElementById('exercise-container');
-            const items = workoutData[currentCategory];
-            container.innerHTML = '';
-
-            items.forEach(item => {
+            exercises.forEach(ex => {
+                let isChecked = workoutLogs[day].checked[ex.id] || false;
                 const card = document.createElement('div');
                 card.className = 'exercise-card';
-                const isChecked = completedExercises[item.id] ? 'checked' : '';
                 card.innerHTML = `
                     <div class="image-container">
-                        <img src="${item.image}" alt="${item.name}" loading="lazy">
+                        <img src="${ex.image}" alt="${ex.name}" loading="lazy">
                     </div>
                     <div class="exercise-info">
                         <div class="exercise-header-row">
-                            <span class="exercise-title">${item.name}</span>
-                            <input type="checkbox" class="exercise-checkbox" ${isChecked} onchange="toggleExercise('${item.id}')">
+                            <span class="exercise-title">${ex.name}</span>
+                            <input type="checkbox" class="exercise-checkbox" ${isChecked ? 'checked' : ''} onchange="toggleExercise(${day}, '${ex.id}')">
                         </div>
                         <div class="exercise-meta">
-                            <span class="meta-badge">Sets: ${item.sets}</span>
-                            <span class="meta-badge">Reps: ${item.reps}</span>
+                            <span class="meta-badge">Sets: ${ex.sets}</span>
+                            <span class="meta-badge">Reps: ${ex.reps}</span>
                         </div>
                     </div>
                 `;
-                container.appendChild(card);
+                contentEl.appendChild(card);
             });
-            updateProgress();
+            updateDayProgress(day);
         }
 
-        // Init
+        function toggleExercise(day, exId) {
+            let log = workoutLogs[day];
+            log.checked[exId] = !log.checked[exId];
+
+            const exercises = workoutLibrary[log.type];
+            const allChecked = exercises.every(ex => log.checked[ex.id]);
+            log.completed = allChecked;
+
+            localStorage.setItem('winterArcLogs', JSON.stringify(workoutLogs));
+            renderCalendar();
+            updateDayProgress(day);
+        }
+
+        function updateDayProgress(day) {
+            let log = workoutLogs[day];
+            const exercises = workoutLibrary[log.type];
+            const checkedCount = exercises.filter(ex => log.checked[ex.id]).length;
+            const pct = Math.round((checkedCount / exercises.length) * 100);
+            document.getElementById('progress-fill').style.width = `${pct}%`;
+        }
+
+        function updateStats() {
+            let totalDone = 0;
+            let streak = 0;
+            
+            for (let day in workoutLogs) {
+                if (workoutLogs[day].completed) totalDone++;
+            }
+
+            // Simple streak calculation counting backwards from today
+            let today = 15; // Current date context simulation
+            for (let d = today; d >= 1; d--) {
+                if (workoutLogs[d] && workoutLogs[d].completed) {
+                    streak++;
+                } else if (getWorkoutTypeForDay(d) !== "Rest") {
+                    break;
+                }
+            }
+
+            document.getElementById('total-completed').innerText = totalDone;
+            document.getElementById('user-streak').innerText = `${streak} Days`;
+
+            let rank = "Novice";
+            if (totalDone >= 5) rank = "Bronze 🥉";
+            if (totalDone >= 12) rank = "Silver 🥈";
+            if (totalDone >= 20) rank = "Gold 🥇";
+            if (totalDone >= 25) rank = "Winter Arc Beast ⚡";
+            document.getElementById('user-rank').innerText = rank;
+        }
+
+        // 100% LocalStorage Photo Privacy Handler
+        function savePhoto() {
+            const fileInput = document.getElementById('imageInput');
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    savedPhotos.push({ date: new Date().toLocaleDateString(), data: e.target.result });
+                    localStorage.setItem('winterArcPhotos', JSON.stringify(savedPhotos));
+                    renderPhotos();
+                    fileInput.value = '';
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+
+        function deletePhoto(index) {
+            savedPhotos.splice(index, 1);
+            localStorage.setItem('winterArcPhotos', JSON.stringify(savedPhotos));
+            renderPhotos();
+        }
+
+        function renderPhotos() {
+            const grid = document.getElementById('photo-grid');
+            grid.innerHTML = '';
+            savedPhotos.forEach((photo, idx) => {
+                const card = document.createElement('div');
+                card.className = 'photo-card';
+                card.innerHTML = `
+                    <img src="${photo.data}" alt="Progress">
+                    <button class="photo-delete" onclick="deletePhoto(${idx})">×</button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Initial Load
         renderCalendar();
-        renderExercises();
+        renderPhotos();
+        selectDate(15); // Default load today (Oct 15)
     </script>
 </body>
 </html>
