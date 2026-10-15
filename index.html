@@ -20,13 +20,14 @@
       color: #ff9800;
       text-align: center;
       margin-bottom: 5px;
-      font-size: 1.6rem;
+      font-size: 1.5rem;
     }
 
     .subtitle {
       color: #aaa;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       margin-bottom: 15px;
+      text-align: center;
     }
 
     .rank-card {
@@ -36,7 +37,7 @@
       padding: 12px 20px;
       text-align: center;
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       box-sizing: border-box;
       margin-bottom: 20px;
     }
@@ -45,11 +46,12 @@
       color: #4caf50;
       font-size: 1.1rem;
       font-weight: bold;
+      margin-top: 4px;
     }
 
-    .routine-container {
+    .month-container {
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       background: #1e1e1e;
       border-radius: 10px;
       padding: 15px;
@@ -57,12 +59,76 @@
       margin-bottom: 20px;
     }
 
-    .routine-title {
+    .month-title {
       color: #ff9800;
-      font-size: 1.1rem;
       margin-top: 0;
+      font-size: 1.2rem;
       border-bottom: 1px solid #333;
       padding-bottom: 8px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .day-header {
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: #ffb74d;
+      padding-bottom: 5px;
+    }
+
+    .day-box {
+      background: #2a2a2a;
+      border-radius: 6px;
+      padding: 6px 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 52px;
+    }
+
+    .day-box.empty {
+      background: transparent;
+    }
+
+    .day-number {
+      font-size: 0.75rem;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .workout-type {
+      font-size: 0.65rem;
+      color: #ffb74d;
+      font-weight: 600;
+      margin: 2px 0;
+    }
+
+    .workout-type.rest {
+      color: #777;
+    }
+
+    .day-box input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #ff9800;
+      cursor: pointer;
+    }
+
+    .routine-container {
+      width: 100%;
+      max-width: 420px;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 15px;
+      box-sizing: border-box;
+      margin-bottom: 20px;
     }
 
     .exercise-list {
@@ -83,11 +149,11 @@
       color: #ffb74d;
       cursor: pointer;
       text-decoration: underline;
-      font-weight: 500;
+      font-size: 0.9rem;
     }
 
     .exercise-detail {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: #888;
     }
 
@@ -119,16 +185,16 @@
     .modal-title {
       color: #ff9800;
       margin-top: 0;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
     }
 
     .modal-gif {
       width: 100%;
       height: 200px;
-      object-fit: cover;
+      object-fit: contain;
       border-radius: 8px;
       margin: 15px 0;
-      background: #2a2a2a;
+      background: #121212;
     }
 
     .close-btn {
@@ -140,88 +206,36 @@
       border-radius: 6px;
       width: 100%;
       cursor: pointer;
-      font-size: 1rem;
     }
   </style>
 </head>
 <body>
 
   <h1>🔥 WINTER ARC TRACKER 🔥</h1>
-  <div class="subtitle">Click exercise name for live animation demo!</div>
+  <div class="subtitle">6-Day PPL Routine (Oct - Dec 2026)<br><small>(Tap exercise name for demo animation)</small></div>
 
   <div class="rank-card">
-    <div>Current Status</div>
-    <div class="rank-title" id="rankDisplay">Recruit ⚡</div>
+    <div>Rank: <span id="rankTitle" class="rank-title">Recruit ⚡</span></div>
+    <div style="font-size:0.85rem; color:#aaa; margin-top:4px;">Workouts Done: <span id="doneCount">0</span> / 79</div>
   </div>
 
-  <!-- PPL Routines -->
+  <!-- Calendar Container -->
+  <div id="calendar"></div>
+
+  <!-- Exercise Demo Routines -->
   <div class="routine-container">
-    <h3 class="routine-title">🏋️ Push Day Routine</h3>
+    <h3 style="color:#ff9800; margin-top:0;">🏋️ Exercise Demos</h3>
     <ul class="exercise-list">
-      <li class="exercise-item">
-        <span class="exercise-name" onclick="openDemo('Bench Press')">Bench Press</span>
-        <span class="exercise-detail">3 Sets x 8-12</span>
-      </li>
-      <li class="exercise-item">
-        <span class="exercise-name" onclick="openDemo('Overhead Press')">Overhead Press</span>
-        <span class="exercise-detail">3 Sets x 8-10</span>
-      </li>
-      <li class="exercise-item">
-        <span class="exercise-name" onclick="openDemo('Incline Dumbbell Press')">Incline Dumbbell Press</span>
-        <span class="exercise-detail">3 Sets x 10-12</span>
-      </li>
-      <li class="exercise-item">
-        <span class="exercise-name" onclick="openDemo('Tricep Pushdown')">Tricep Pushdown</span>
-        <span class="exercise-detail">4 Sets x 12-15</span>
-      </li>
+      <li class="exercise-item"><span class="exercise-name" onclick="openDemo('Bench Press')">Bench Press</span><span class="exercise-detail">Push</span></li>
+      <li class="exercise-item"><span class="exercise-name" onclick="openDemo('Overhead Press')">Overhead Press</span><span class="exercise-detail">Push</span></li>
+      <li class="exercise-item"><span class="exercise-name" onclick="openDemo('Pull Ups')">Pull Ups</span><span class="exercise-detail">Pull</span></li>
+      <li class="exercise-item"><span class="exercise-name" onclick="openDemo('Barbell Row')">Barbell Row</span><span class="exercise-detail">Pull</span></li>
+      <li class="exercise-item"><span class="exercise-name" onclick="openDemo('Squats')">Squats</span><span class="exercise-detail">Legs</span></li>
+      <li class="exercise-item"><span class="exercise-name" onclick="openDemo('Deadlift')">Deadlift</span><span class="exercise-detail">Legs</span></li>
     </ul>
   </div>
 
-  <div class="routine-container">
-    <h3 class="routine-title">💪 Pull Day Routine</h3>
-    <ul class="exercise-list">
-      <li class="exercise-item">
-        <span class="exercise-name" onclick="openDemo('Pull Ups')">Pull Ups</span>
-        <span class="exercise-detail">3 Sets x Max</span>
-      </li>
-      <li class="exercise-item">
-        <span class="exercise-name" onclick="openDemo('Barbell Row')">Barbell Row</span>
-        <span class="exercise-detail">3 Sets x 8-10</span>
-      </li>
-      <li class="exercise-item">
-        <span class="exercise-name" onclick="openDemo('Lat Pulldown')">Lat Pulldown</span>
-        <span class="exercise-detail">3 Sets x 10-12</span>
-      </li>
-      <li class="exercise-item">
-        <span class="exercise-name" onclick="openDemo('Bicep Curls')">Bicep Curls</span>
-        <span class="exercise-detail">4 Sets x 12</span>
-      </li>
-    </ul>
-  </div>
-
-  <div class="routine-container">
-    <h3 class="routine-title">🦵 Leg Day Routine</h3>
-    <ul class="exercise-list">
-      <li class="exercise-item">
-        <span class="exercise-name" onclick="openDemo('Squats')">Squats</span>
-        <span class="exercise-detail">3 Sets x 8-10</span>
-      </li>
-      <li class="exercise-item">
-        <span class="exercise-name" onclick="openDemo('Deadlift')">Deadlift</span>
-        <span class="exercise-detail">3 Sets x 5</span>
-      </li>
-      <li class="exercise-item">
-        <span class="exercise-name" onclick="openDemo('Leg Press')">Leg Press</span>
-        <span class="exercise-detail">3 Sets x 10-12</span>
-      </li>
-      <li class="exercise-item">
-        <span class="exercise-name" onclick="openDemo('Calf Raises')">Calf Raises</span>
-        <span class="exercise-detail">4 Sets x 15-20</span>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Animation Popup Modal -->
+  <!-- Modal Popup -->
   <div id="demoModal" class="modal-overlay">
     <div class="modal-content">
       <h3 id="modalTitle" class="modal-title">Exercise Name</h3>
@@ -231,31 +245,101 @@
   </div>
 
   <script>
-    // GIF Animation Database
+    const monthsData = [
+      { name: "October 2026", days: 31, startDay: 3 },
+      { name: "November 2026", days: 30, startDay: 6 },
+      { name: "December 2026", days: 31, startDay: 1 }
+    ];
+
+    const pplPattern = ["PUSH", "PULL", "LEGS", "PUSH", "PULL", "LEGS", "REST"];
+    const weekHeaders = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+    // Direct Working GIF URLs (Wikimedia / Public Stable Sources)
     const gifMap = {
-      "Bench Press": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3h2OGJxbTRiYjBwbnZicGNidnl5aXltNm1ubTFna3lzNnAwb3Y3ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKRn3iR1TkyD93W/giphy.gif",
-      "Overhead Press": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2R4NW8xdGZubWkydndxeTB5Nzh1cnRpa2ZqNjY3bWZsaW5zbTVvaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKx2sL31y5L7i2A/giphy.gif",
-      "Incline Dumbbell Press": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnQ2ZGZqZGtvdmt4NHBxeTJpMHJqNm52bzEwMjBuaHRzZjI2MXA2eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l41YqN60GkC5T3oYM/giphy.gif",
-      "Tricep Pushdown": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1eHN3Yng3ZmdxbTN2aXdtNmR1czZxcGZ1YmluZmR1b3d2Y3RxdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKM44wF5m5qW7K0/giphy.gif",
-      "Pull Ups": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1eHN3Yng3ZmdxbTN2aXdtNmR1czZxcGZ1YmluZmR1b3d2Y3RxdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKM44wF5m5qW7K0/giphy.gif",
-      "Barbell Row": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3h2OGJxbTRiYjBwbnZicGNidnl5aXltNm1ubTFna3lzNnAwb3Y3ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKRn3iR1TkyD93W/giphy.gif",
-      "Lat Pulldown": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1eHN3Yng3ZmdxbTN2aXdtNmR1czZxcGZ1YmluZmR1b3d2Y3RxdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKM44wF5m5qW7K0/giphy.gif",
-      "Bicep Curls": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3h2OGJxbTRiYjBwbnZicGNidnl5aXltNm1ubTFna3lzNnAwb3Y3ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKRn3iR1TkyD93W/giphy.gif",
-      "Squats": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2R4NW8xdGZubWkydndxeTB5Nzh1cnRpa2ZqNjY3bWZsaW5zbTVvaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKx2sL31y5L7i2A/giphy.gif",
-      "Deadlift": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnQ2ZGZqZGtvdmt4NHBxeTJpMHJqNm52bzEwMjBuaHRzZjI2MXA2eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l41YqN60GkC5T3oYM/giphy.gif",
-      "Leg Press": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2R4NW8xdGZubWkydndxeTB5Nzh1cnRpa2ZqNjY3bWZsaW5zbTVvaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKx2sL31y5L7i2A/giphy.gif",
-      "Calf Raises": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3h2OGJxbTRiYjBwbnZicGNidnl5aXltNm1ubTFna3lzNnAwb3Y3ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKRn3iR1TkyD93W/giphy.gif"
+      "Bench Press": "https://upload.wikimedia.org/wikipedia/commons/b/b8/Bench-press-1.gif",
+      "Overhead Press": "https://upload.wikimedia.org/wikipedia/commons/8/82/Shoulder-press-1.gif",
+      "Pull Ups": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Pull-up-1.gif",
+      "Barbell Row": "https://upload.wikimedia.org/wikipedia/commons/5/58/Bent-over-row-1.gif",
+      "Squats": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Squat-1.gif",
+      "Deadlift": "https://upload.wikimedia.org/wikipedia/commons/0/07/Deadlift-1.gif"
     };
+
+    function renderCalendar() {
+      const calendarEl = document.getElementById('calendar');
+      calendarEl.innerHTML = '';
+
+      monthsData.forEach((m, mIdx) => {
+        const monthDiv = document.createElement('div');
+        monthDiv.className = 'month-container';
+        
+        let html = `<h3 class="month-title">${m.name}</h3><div class="calendar-grid">`;
+        weekHeaders.forEach(h => html += `<div class="day-header">${h}</div>`);
+
+        for (let i = 0; i < m.startDay; i++) {
+          html += `<div class="day-box empty"></div>`;
+        }
+
+        for (let day = 1; day <= m.days; day++) {
+          const dayOfWeekIndex = (m.startDay + day - 1) % 7;
+          const workoutType = pplPattern[dayOfWeekIndex];
+          const isRest = workoutType === "REST";
+          const dayKey = `day_${mIdx}_${day}`;
+          const isChecked = localStorage.getItem(dayKey) === 'true';
+
+          html += `
+            <div class="day-box">
+              <div class="day-number">${day}</div>
+              <div class="workout-type ${isRest ? 'rest' : ''}">${workoutType}</div>
+              ${!isRest ? `<input type="checkbox" id="${dayKey}" ${isChecked ? 'checked' : ''} onchange="toggleCheck('${dayKey}')">` : ''}
+            </div>
+          `;
+        }
+
+        html += `</div>`;
+        monthDiv.innerHTML = html;
+        calendarEl.appendChild(monthDiv);
+      });
+
+      updateStats();
+    }
+
+    function toggleCheck(key) {
+      const checkbox = document.getElementById(key);
+      localStorage.setItem(key, checkbox.checked);
+      updateStats();
+    }
+
+    function updateStats() {
+      let count = 0;
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('day_') && localStorage.getItem(key) === 'true') {
+          count++;
+        }
+      }
+
+      document.getElementById('doneCount').innerText = count;
+
+      let rank = "Recruit ⚡";
+      if (count >= 10) rank = "Hypertrophy Adept ⚡";
+      if (count >= 25) rank = "Iron Disciple 🔥";
+      if (count >= 45) rank = "Arc Master 💪";
+      if (count >= 65) rank = "Unstoppable Beast 👑";
+
+      document.getElementById('rankTitle').innerText = rank;
+    }
 
     function openDemo(name) {
       document.getElementById('modalTitle').innerText = name;
-      document.getElementById('modalGif').src = gifMap[name] || "https://media.giphy.com/media/3o7TKRn3iR1TkyD93W/giphy.gif";
+      document.getElementById('modalGif').src = gifMap[name] || "https://upload.wikimedia.org/wikipedia/commons/b/b8/Bench-press-1.gif";
       document.getElementById('demoModal').style.display = 'flex';
     }
 
     function closeDemo() {
       document.getElementById('demoModal').style.display = 'none';
     }
+
+    renderCalendar();
   </script>
 </body>
 </html>
