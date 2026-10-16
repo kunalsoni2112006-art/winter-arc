@@ -87,10 +87,10 @@
                 <div id="split-tabs" class="grid grid-cols-4 gap-2">
                     <button data-split="push1" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border">Push 1</button>
                     <button data-split="pull1" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border">Pull 1</button>
-                    <button data-split="legs1" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border">Legs 1</button>
+                    <button data-split="legs1" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border">Legs+Core 1</button>
                     <button data-split="push2" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border">Push 2</button>
                     <button data-split="pull2" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border">Pull 2</button>
-                    <button data-split="legs2" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border">Legs 2</button>
+                    <button data-split="legs2" class="split-btn px-2 py-2.5 rounded-xl font-bold text-xs transition border">Legs+Core 2</button>
                     <button data-split="rest" class="split-btn col-span-2 px-2 py-2.5 rounded-xl font-bold text-xs transition border">Rest / Recovery</button>
                 </div>
             </section>
@@ -338,6 +338,13 @@
             return new Date(y, m - 1, d);
         }
 
+        // Weekly schedule by day of week (0 = Sunday ... 6 = Saturday)
+        // Mon Push 1, Tue Pull 1, Wed Legs+Core 1, Thu Push 2, Fri Pull 2, Sat Legs+Core 2, Sun Rest
+        const WEEK_SPLITS = ['rest', 'push1', 'pull1', 'legs1', 'push2', 'pull2', 'legs2'];
+        function splitForDate(key) {
+            return WEEK_SPLITS[parseDateKey(key).getDay()];
+        }
+
         // ---------- State ----------
         let currentSplit = 'push1';
         let workoutData = loadJSON(LS_LOGS, {});
@@ -436,6 +443,7 @@
             document.getElementById('rest-plus-btn').addEventListener('click', () => adjustRestTime(15));
             document.getElementById('rest-stop-btn').addEventListener('click', stopRestTimer);
 
+            currentSplit = splitForDate(selectedDateKey); // auto-pick today's workout
             updateSplitUI();
             renderExercises();
             renderCalendar();
@@ -488,7 +496,8 @@
             const container = document.getElementById('exercise-container');
             const routine = routines[currentSplit];
             const savedLog = workoutData[selectedDateKey]?.[currentSplit] || {};
-            const isSunday = parseDateKey(selectedDateKey).getDay() === 0;
+            // Photo task shows on every Sunday date, and also whenever the Rest day is open
+            const isSunday = parseDateKey(selectedDateKey).getDay() === 0 || currentSplit === 'rest';
 
             let html = '';
 
@@ -936,6 +945,8 @@
 
         function selectCalendarDate(year, month, day) {
             selectedDateKey = formatDateKey(new Date(year, month, day));
+            currentSplit = splitForDate(selectedDateKey); // workout follows the selected day
+            updateSplitUI();
             renderCalendar();
             renderExercises();
         }
